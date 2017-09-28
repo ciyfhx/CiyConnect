@@ -1,0 +1,29 @@
+apply plugin: 'java'
+
+sourceSets{
+    src {
+        test {
+            java{
+                srcDir 'src/test'
+            }
+
+        }
+    }
+}
+
+dependencies {
+    compile project(':library')
+    testCompile 'junit:junit:4.12'
+}
+
+
+task runServer(type: JavaExec){
+    classpath sourceSets.test.runtimeClasspath
+    main  = 'com.ciyfhx.test.ServerTest'
+    standardInput = System.in
+}
+
+task runClient(type: JavaExec){
+    classpath sourceSets.test.runtimeClasspath
+    main = 'com.ciyfhx.test.ClientTest'
+}

@@ -1,0 +1,36 @@
+
+plugins {
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+
+apply plugin: 'java'
+
+sourceSets {
+    src {
+        main {
+            java{
+                srcDir 'src/main'
+            }
+        }
+    }
+}
+
+bintray {
+    user = project.property('bintray.user')
+    key = project.property('bintray.apikey')
+    println user
+    println key
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = 'CiyConnect'
+        userOrg = user
+        licenses = ['Apache-2.0']
+        version {
+            name = '1.0.0'
+            desc = 'A Java library for creating TCP server and client'
+            vcsTag = '1.0.0'
+        }
+    }
+}

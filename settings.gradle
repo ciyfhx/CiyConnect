@@ -1,0 +1,3 @@
+rootProject.name = 'CiyConnect'
+include ':library', ':test'
+

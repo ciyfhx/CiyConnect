@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":test:src" external.linked.project.path="$MODULE_DIR$/../../../test" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.ciyfhx" external.system.module.type="sourceSet" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
+    <output url="file://$MODULE_DIR$/../../../test/out/src/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../test/src/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../test/src/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../test/src/src/resources" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

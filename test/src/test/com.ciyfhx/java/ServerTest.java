@@ -1,4 +1,4 @@
-package com.ciyfhx.test;
+package com.ciyfhx.java;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,11 +44,25 @@ public class ServerTest {
 			public void connected(NetworkConnection connector) {
 				connector.getPipeLineStream().addPipeLine(new CompressionPipeLine());
 				System.out.println("Connector: " + connector.getAddress());
+
+
+//				for(int i = 0; i < 100; i++){
+//					String message = new String("Testing " + i);
+//					server.stream().forEach(con -> {
+//						try {
+//							con.getNetworkInterface().sendPacket(new MessagingPacket(message));
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//						}
+//					});
+//				}
+
 			}
 		});
 
 		server.acceptIncomingConnectionAsync();
-		System.out.println("End");
+
+
 
 		Scanner scanner = new Scanner(System.in);
 

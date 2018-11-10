@@ -1,31 +1,38 @@
+/*
+ * Copyright (c) 2018.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.ciyfhx.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NetworkInterface implements Runnable {
-
-	private long maxPacketSize = 5048;
-	private int delay = 100;//In milliseconds
+public abstract class NetworkInterface implements Runnable {
 
 	private AtomicBoolean connected = new AtomicBoolean(false);
 
-	private NetworkConnection networkConnection;
+	protected NetworkConnection networkConnection;
+	protected BaseServerClientModel model;
 
 	private Logger logger = LoggerFactory.getLogger(NetworkInterface.class);
-
-	private BaseServerClientModel model;
 
 	protected NetworkInterface(NetworkConnection networkConnection, BaseServerClientModel model) {
 		this.networkConnection = networkConnection;
@@ -40,46 +47,13 @@ public class NetworkInterface implements Runnable {
 		if (networkListener != null)
 			networkListener.connected(networkConnection);
 
-		DataInputStream input = networkConnection.getDataInputStream();
-
-		try {
 			while (connected.get()) {
-
-				int id = input.readInt();
-				logger.trace("Received packet id: {} from: {}", id, networkConnection.getAddress());
-				SubmissionPublisher<PacketEvent<Packet>> publisher = model.getPacketsFactory().checkPacket(id);
-				if (publisher != null) {
-					int packetSize = input.readInt();
-					if (packetSize >= maxPacketSize) {
-						logger.warn("Packet size exceed limit: {}", packetSize);
-						break;
-					}
-					ByteBuffer buffer = ByteBuffer.allocate(packetSize);
-					input.readFully(buffer.array(), 0, packetSize);
-
-					// Through pipeline
-					PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
-					try {
-						if (pipeLineStream != null)buffer = pipeLineStream.streamRead(buffer);
-					}catch(Exception e){
-						e.printStackTrace();
-						logger.warn("Unable to decode data");
-						break;
-					}
-
-
-					publisher.submit(new PacketEvent(networkConnection, new Packet(buffer)));
-				} else {
-					logger.warn("Unknown packet id: {}", id);
-					break;
-				}
-				Thread.sleep(delay);
+				this.readProtocol();
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("Connection reset {}", networkConnection.getAddress());
-		} finally {
+
+			//Close connection
 			try {
+				closePublishers();
 				close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -87,8 +61,55 @@ public class NetworkInterface implements Runnable {
 			connected.set(false);
 			if (networkListener != null)
 				networkListener.disconnected(networkConnection);
-		}
+	}
 
+	/**
+	 * Transform or decode the incoming data from the predefine pipeline
+	 * <b>Note:</b>This is similar to @see #transformPipelineWrite but does the transformation in reverse order
+	 * @param publisher - the publisher which the will call closeExceptionally on
+	 * @param buffer - buffer to be transform
+	 * @return
+	 * @throws Exception
+	 */
+	protected ByteBuffer transformPipelineRead(SubmissionPublisher<PacketEvent<Packet>> publisher, ByteBuffer buffer) throws Exception{
+		ByteBuffer tmpBuffer = buffer;
+
+		PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
+		try {
+			if (pipeLineStream != null)tmpBuffer = pipeLineStream.streamRead(buffer);
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.warn("Unable to decode data");
+			publisher.closeExceptionally(e);
+		}
+		return tmpBuffer;
+	}
+
+	/**
+	 * Transform or encode the outgoing data from the predefine pipeline
+	 * @param buffer - buffer to be transform
+	 * @return
+	 * @throws Exception
+	 */
+	protected ByteBuffer transformPipelineWrite(ByteBuffer buffer) throws Exception{
+		ByteBuffer tmpBuffer = buffer;
+
+		PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
+		if (pipeLineStream != null)
+			tmpBuffer = pipeLineStream.streamWrite(buffer);
+		return tmpBuffer;
+	}
+
+	abstract protected void readProtocol();
+	abstract protected void writeProtocol(Packet packet) throws Exception ;
+
+	/**
+	 * Set the atomic connected boolean value
+	 * Setting this to false will escape from the runnable loop but does not terminate existing network read calls
+	 * @param connected
+	 */
+	protected void setConnected(boolean connected){
+		this.connected.set(connected);
 	}
 
 	@Override
@@ -97,20 +118,12 @@ public class NetworkInterface implements Runnable {
 	}
 
 	/**
-	 * Set the interval each packet can be read in milliseconds
-	 * @param delay
+	 * Close all publishers
 	 */
-	public void setDelay(int delay){
-		this.delay = delay;
+	private void closePublishers(){
+		model.getPacketsFactory().getPublishers().forEach(SubmissionPublisher::close);
 	}
-	
-	/**
-	 * Set the maximum packet size the interface can accept
-	 * @param size
-	 */
-	public void setMaxPacketSize(long size) {
-		this.maxPacketSize = size;
-	}
+
 
 	/**
 	 * Close the current socket
@@ -126,37 +139,22 @@ public class NetworkInterface implements Runnable {
 	 * @throws Exception
 	 */
 	public synchronized void sendPacket(Packet packet) throws Exception {
-		DataOutputStream output = networkConnection.getDataOutputStream();
-		output.writeInt(packet.getPacketID());
-		output.flush();
-
-		ByteBuffer data = packet.getData();
-
-		// Through pipeline
-		PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
-		if (pipeLineStream != null)
-			data = pipeLineStream.streamWrite(data);
-
-		output.writeInt(data.capacity());
-		output.flush();
-		output.write(data.array());
-		output.flush();
+		writeProtocol(packet);
 	}
 
-//	/**
-//	 * Send packet async
-//	 * @param packet
-//	 */
-//	public void sendPacketAsync(Packet packet){
-//		Executors.
-//		CompletableFuture.runAsync(() -> {
-//			try {
-//				sendPacket(packet);
-//			} catch (Exception e) {
-//				exceptionFunction.OnThrowback(e);
-//			}
-//		});
-//	}
+	/**
+	 * Send packet async
+	 * @param packet
+	 */
+	public void sendPacketAsync(Packet packet){
+		CompletableFuture.runAsync(() -> {
+			try {
+				sendPacket(packet);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
 
 
 }

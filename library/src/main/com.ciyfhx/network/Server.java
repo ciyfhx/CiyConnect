@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2018.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.ciyfhx.network;
 
 import java.io.DataInputStream;
@@ -80,12 +96,12 @@ public class Server extends BaseServerClientModel{
 	 * 
 	 * @throws IOException
 	 */
-	public void acceptIncomingConnection() throws IOException {
+	public NetworkConnection acceptIncomingConnection() throws IOException {
 		if (!init.get())
 			throw new IllegalStateException("Server not initialized!");
 
 		running.set(true);
-		while (isRunning()) {
+		if (isRunning()) {
 
 			// accept connection
 			Socket socket = server.accept();
@@ -117,35 +133,29 @@ public class Server extends BaseServerClientModel{
 					authenticationManager.authenticationFailed(networkConnection);
 				}
 			} else {
-				//If no authentication protocal is specified
+				//If no authentication protocol is specified
 				dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
 				//executorService.submit(networkConnection.createNetworkInterface());
 
 				addConnection(networkConnection);
 			}
-
+			return networkConnection;
 		}
+		return null;
 	}
 
 	/**
 	 * Calls the accept incoming connection return once the the server stop accepting connection(ASync)
 	 * @return - future submitted
 	 */
-	public CompletableFuture<Boolean> acceptIncomingConnectionAsync() {
-		ExecutorService service = Executors.newSingleThreadExecutor();
-		CompletableFuture<Boolean> acceptConnection = new CompletableFuture<Boolean>();
-		service.submit(() -> {
-
+	public CompletableFuture<NetworkConnection> acceptIncomingConnectionAsync() {
+		return CompletableFuture.supplyAsync(() -> {
 			try {
-				acceptIncomingConnection();
-				acceptConnection.complete(true);
+				return acceptIncomingConnection();
 			} catch (IOException e) {
-				e.printStackTrace();
-				acceptConnection.completeExceptionally(e);
+				throw new RuntimeException(e);
 			}
-
 		});
-		return acceptConnection;
 
 	}
 

@@ -20,7 +20,7 @@ import com.ciyfhx.network.authenticate.AuthenticationManager;
 
 public final class ClientBuilder {
 
-    private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAutenticationManager();
+    private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
 
     private PacketsFactory packetsFactory = new PacketsFactory();
 

@@ -23,7 +23,7 @@ import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 import java.io.IOException;
 
 public final class ServerBuilder {
-    private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAutenticationManager();
+    private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
     private int port = 5555;
 
     private PacketsFactory packetsFactory = new PacketsFactory();

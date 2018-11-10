@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.SubmissionPublisher;
 
-import com.ciyfhx.builder.ServerBuilder;
 import com.ciyfhx.network.*;
 import com.ciyfhx.packets.MessagingPacket;
 import com.ciyfhx.packets.PacketIDs;
@@ -59,6 +58,7 @@ public class ServerTest {
 
 			}
 		});
+
 
 		server.acceptIncomingConnectionAsync();
 

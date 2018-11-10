@@ -14,15 +14,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network;
+package com.ciyfhx.network.validator;
 
-import com.ciyfhx.network.validator.MACValidator;
-
-import java.nio.ByteBuffer;
-
-public interface PipeLine {
-	
-	ByteBuffer read(ByteBuffer data) throws Exception, MACValidator.InvalidHashException;
-	ByteBuffer write(ByteBuffer data) throws Exception;
-	
+public class HMACValidator {
 }

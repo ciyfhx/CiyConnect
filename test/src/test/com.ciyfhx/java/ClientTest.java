@@ -37,6 +37,7 @@ import java.util.concurrent.SubmissionPublisher;
 
 
 import com.ciyfhx.network.*;
+import com.ciyfhx.network.validator.MACValidator;
 import com.ciyfhx.packets.PacketIDs;
 import com.ciyfhx.processors.Processors;
 import com.ciyfhx.processors.TransformProcessor;
@@ -76,6 +77,7 @@ public class ClientTest {
 
 			System.out.println("Connected");
 			client.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+			client.getPipeLineStream().addPipeLine(new MACValidator());
 		});
 
 		//Blocking

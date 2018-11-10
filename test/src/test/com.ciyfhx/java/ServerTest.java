@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.SubmissionPublisher;
 
 import com.ciyfhx.network.*;
+import com.ciyfhx.network.validator.MACValidator;
 import com.ciyfhx.packets.MessagingPacket;
 import com.ciyfhx.packets.PacketIDs;
 import com.ciyfhx.processors.Processors;
@@ -17,7 +18,7 @@ public class ServerTest {
 
 	public static void main(String[] args) throws IllegalAccessException, IOException, InterruptedException, PacketsFactory.NotFoundException {
 
-		System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+		System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
 
 		PacketsFactory factory = new PacketsFactory();
 
@@ -42,6 +43,7 @@ public class ServerTest {
 			@Override
 			public void connected(NetworkConnection connector) {
 				connector.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+				connector.getPipeLineStream().addPipeLine(new MACValidator());
 				System.out.println("Connector: " + connector.getAddress());
 
 

@@ -1,4 +1,4 @@
-package com.ciyfhx.network;
+package com.ciyfhx.network.authenticate;
 
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -16,6 +16,9 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import com.ciyfhx.builder.PipeLineStreamBuilder;
+import com.ciyfhx.network.AESPipeLine;
+import com.ciyfhx.network.NetworkConnection;
+import com.ciyfhx.network.PipeLineStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

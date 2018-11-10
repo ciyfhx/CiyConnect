@@ -1,5 +1,7 @@
 package com.ciyfhx.network;
 
+import com.ciyfhx.network.authenticate.AuthenticationManager;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -17,6 +19,10 @@ public class Client extends BaseServerClientModel{
 
 	protected NetworkConnection networkConnection;
 
+
+	protected Client(AuthenticationManager authenticationManager, PacketsFactory packetsFactory){
+		super(authenticationManager, packetsFactory);
+	}
 
 	/**
 	 * Connect to server
@@ -55,7 +61,7 @@ public class Client extends BaseServerClientModel{
 	 * @param port
 	 * @return
 	 */
-	public CompletableFuture<Boolean> connectAync(String host, int port){
+	public CompletableFuture<Boolean> connectAsync(String host, int port){
 
 		CompletableFuture<Boolean> future = new CompletableFuture<Boolean>();
 		executorService.submit(() -> {

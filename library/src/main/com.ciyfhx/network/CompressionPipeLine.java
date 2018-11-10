@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.zip.DataFormatException;
 
-import com.ciyfhx.network.PipeLine;
-
 public class CompressionPipeLine implements PipeLine{
 
 

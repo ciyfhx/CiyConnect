@@ -1,18 +1,14 @@
 package com.ciyfhx.network;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Stream;
 
 public class PacketsFactory {
 
-	private Map<Integer, SubmissionPublisher<PacketEvent<Packet>>> registeredPublishers = new HashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>>();
+	private ConcurrentHashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>> registeredPublishers = new ConcurrentHashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>>();
 
-//	public static void registerPacketManager(PacketManager<Packet> packetManager, int id) {
-//		registeredPacketManager.put(id, packetManager);
-//	}
 	
 	public void registerPublisher(SubmissionPublisher<PacketEvent<Packet>> publisher, int id) throws AlreadyInsertedException {
 		registeredPublishers.put(id, publisher);
@@ -28,7 +24,7 @@ public class PacketsFactory {
 
 	}
 
-	public void registerIds(List<Integer> list){
+	public void registerIds(Collection<Integer> list){
 		list.stream().distinct().filter(id -> !registeredPublishers.keySet().contains(id)).forEach(id -> registeredPublishers.put(id, new SubmissionPublisher<PacketEvent<Packet>>()));
 	}
 

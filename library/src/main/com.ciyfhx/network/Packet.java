@@ -27,6 +27,6 @@ public class Packet {
 	public int getPacketID(){
 		return id;
 	}
-	
+
 	
 }

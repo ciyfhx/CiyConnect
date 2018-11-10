@@ -1,4 +1,4 @@
-package com.ciyfhx.test;
+package com.ciyfhx.java;
 
 import java.util.List;
 import java.util.concurrent.SubmissionPublisher;
@@ -41,11 +41,10 @@ public class ClientTest {
 			}
 		});
 
-		client.connectAync("localhost", 5555).thenAccept((b) -> {
+		client.connectAsync("localhost", 5555).thenAccept((b) -> {
 
 			System.out.println("Connected");
 			client.getPipeLineStream().addPipeLine(new CompressionPipeLine());
-
 		});
 
 

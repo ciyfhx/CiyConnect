@@ -91,6 +91,11 @@ public class NetworkInterface implements Runnable {
 
 	}
 
+	@Override
+	public String toString(){
+		return String.format("IP: %s", networkConnection.getAddress().getHostAddress());
+	}
+
 	/**
 	 * Set the interval each packet can be read in milliseconds
 	 * @param delay

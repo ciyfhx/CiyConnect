@@ -1,7 +1,6 @@
 package com.ciyfhx.network;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,10 +27,6 @@ public class PipeLineStream {
 	public void addPipeLine(PipeLine pipeLine) {
 		pipeLines.add(pipeLine);
 	}
-	
-//	public void addPipeLineReverse(PipeLine pipeLine) {
-//		pipeLines.add(0, pipeLine);
-//	}
 	
 	public void addPipeLine(int index, PipeLine pipeLine){
 		pipeLines.add(index, pipeLine);

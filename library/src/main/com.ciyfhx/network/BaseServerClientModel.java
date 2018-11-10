@@ -1,5 +1,7 @@
 package com.ciyfhx.network;
 
+import com.ciyfhx.network.authenticate.AuthenticationManager;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BaseServerClientModel {
@@ -22,31 +24,37 @@ public class BaseServerClientModel {
         return networkListener;
     }
 
-    /**
-     * Set the type of authentication manager
-     *
-     * @param authenticationManager
-     */
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+
+    protected BaseServerClientModel(AuthenticationManager authenticationManager, PacketsFactory packetsFactory){
         this.authenticationManager = authenticationManager;
-    }
-
-    /**
-     * Get the current authentication manager
-     *
-     * @return
-     */
-    public AuthenticationManager getAuthenticationManager() {
-        return this.authenticationManager;
-    }
-
-    public void setPacketsFactory(PacketsFactory packetsFactory){
         this.packetsFactory = packetsFactory;
     }
 
-    public PacketsFactory getPacketsFactory(){
-        return packetsFactory;
-    }
+//    /**
+//     * Set the type of authentication manager
+//     *
+//     * @param authenticationManager
+//     */
+//    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//    }
+//
+//    /**
+//     * Get the current authentication manager
+//     *
+//     * @return
+//     */
+//    public AuthenticationManager getAuthenticationManager() {
+//        return this.authenticationManager;
+//    }
+//
+//    public void setPacketsFactory(PacketsFactory packetsFactory){
+//        this.packetsFactory = packetsFactory;
+//    }
+//
+//    public PacketsFactory getPacketsFactory(){
+//        return packetsFactory;
+//    }
 
     public boolean isRunning() {
         return running.get();

@@ -34,7 +34,12 @@ public class NetworkConnection {
 	protected void setNetworkListener(NetworkListener networkListener){
 		this.networkListener = networkListener;
 	}
-	
+
+	/**
+	 * Module method
+	 * Creates new connection used for connecting
+	 * @return
+	 */
 	protected NetworkInterface createNetworkInterface(){
 		networkInterface = new NetworkInterface(this, model);
 		return this.networkInterface;

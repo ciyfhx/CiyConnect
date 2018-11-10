@@ -1,12 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":test:src" external.linked.project.path="$MODULE_DIR$/../../../test" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.ciyfhx" external.system.module.type="sourceSet" external.system.module.version="1.0-SNAPSHOT" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":test:src" external.linked.project.path="$MODULE_DIR$/../../../test" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.ciyfhx" external.system.module.type="sourceSet" external.system.module.version="1.0.2" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.6" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/../../../test/build/classes/kotlin/src" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="test_src" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.2" />
+          <option name="apiVersion" value="1.2" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+          <option name="coroutinesState" value="warn" />
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
     <output url="file://$MODULE_DIR$/../../../test/out/src/classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../test/src/src">
-      <sourceFolder url="file://$MODULE_DIR$/../../../test/src/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../test/src/src/resources" type="java-resource" />
-    </content>
+    <content url="file://$MODULE_DIR$/../../../test/src/src" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

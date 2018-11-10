@@ -1,10 +1,10 @@
-package com.ciyfhx.network;
+package com.ciyfhx.network.authenticate;
 
-import javafx.util.Duration;
+import com.ciyfhx.network.NetworkConnection;
 
 public abstract class AuthenticationManager {
 	
-	private Duration authenticationTimeOut = Duration.millis(5000);
+	private long authenticationTimeOut = 5000;
 
 	abstract public boolean serverAuthenticate(NetworkConnection connection);
 
@@ -20,11 +20,11 @@ public abstract class AuthenticationManager {
 		return new RSAWithAESAuthentication();
 	}
 
-	public void setAuthenticationTimeOut(Duration authenticationTimeOut){
+	public void setAuthenticationTimeOut(long authenticationTimeOut){
 		this.authenticationTimeOut = authenticationTimeOut;
 	}
 	
-	public Duration getAuthenticationTimeOut(){
+	public long getAuthenticationTimeOut(){
 		return authenticationTimeOut;
 	}
 	

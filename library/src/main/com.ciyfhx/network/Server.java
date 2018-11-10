@@ -5,21 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
+import com.ciyfhx.network.authenticate.AuthenticationManager;
+import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,17 +21,28 @@ public class Server extends BaseServerClientModel{
 
 	protected ServerSocket server;
 
-	protected ObservableMap<Integer, NetworkConnection> connections = FXCollections.observableHashMap();
-
-	protected AtomicInteger idCounter = new AtomicInteger(-1);
+	protected ConcurrentHashMap<Long, NetworkConnection> connections = new ConcurrentHashMap<Long, NetworkConnection>();
+//
+//	protected AtomicInteger idCounter = new AtomicInteger(-1);
+	protected long idCounter = -1;
 
 	protected NetworkListener serverNetworkListener;
 
-	protected int maxConnections = 3;
 
-	private ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+//	protected int maxConnections = 3;
+
+//
+//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+	private ServerConnectionDispatcher dispatcher;
 
 	private AtomicBoolean init = new AtomicBoolean(false);
+
+	protected Server(AuthenticationManager authenticationManager, PacketsFactory packetsFactory, ServerConnectionDispatcher dispatcher) {
+		super(authenticationManager, packetsFactory);
+		this.dispatcher = dispatcher;
+	}
 
 	/**
 	 * Initialize server socket
@@ -91,37 +94,22 @@ public class Server extends BaseServerClientModel{
 			networkConnection.setNetworkListener(serverNetworkListener);
 
 			//Check whether there is too many connections
-			if(connections.size()>=maxConnections){
-				logger.warn("{} attempt to connect but there are too many connections", networkConnection.getAddress());
-				networkConnection.close();
-				continue;
-			}
+//			if(connections.size()>=maxConnections){
+//				logger.warn("{} attempt to connect but there are too many connections", networkConnection.getAddress());
+//				networkConnection.close();
+//				continue;
+//			}
 
 			// Check if authentication is null else we will just accept the
 			// connection
 			if (authenticationManager != null) {
-				// Create a timeline for authentication (Only works in JavaFX)
-//				Timeline authenticationTimer = new Timeline(
-//						new KeyFrame(authenticationManager.getAuthenticationTimeOut(), ae -> {
-//							// Authentication Timeout
-//							authenticationManager.authenticationTimeOut(networkConnection);
-//
-//							try {
-//								networkConnection.close();
-//							} catch (IOException e) {
-//								e.printStackTrace();
-//							}
-//
-//						}));
-//				authenticationTimer.playFromStart();
-				socket.setSoTimeout((int)authenticationManager.getAuthenticationTimeOut().toMillis());
+				socket.setSoTimeout((int)authenticationManager.getAuthenticationTimeOut());
 				if (authenticationManager.serverAuthenticate(networkConnection)) {
-//					authenticationTimer.stop();
 					socket.setSoTimeout(0);
 					authenticationManager.authenticationSuccess(networkConnection);
 
-
-					executorService.submit(networkConnection.createNetworkInterface());
+					dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
+					//executorService.submit(networkConnection.createNetworkInterface());
 
 					addConnection(networkConnection);
 				} else {
@@ -129,7 +117,9 @@ public class Server extends BaseServerClientModel{
 					authenticationManager.authenticationFailed(networkConnection);
 				}
 			} else {
-				executorService.submit(networkConnection.createNetworkInterface());
+				//If no authentication protocal is specified
+				dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
+				//executorService.submit(networkConnection.createNetworkInterface());
 
 				addConnection(networkConnection);
 			}
@@ -171,7 +161,7 @@ public class Server extends BaseServerClientModel{
 
 	}
 
-	@Deprecated(since = "Long Long Time Ago :)")
+	@Deprecated()
 	public void broadcast(Packet packet) throws NetworkResetException{
 		Iterator<NetworkConnection> networkConnections = connections.values().iterator();
 		while (networkConnections.hasNext()) {
@@ -194,7 +184,7 @@ public class Server extends BaseServerClientModel{
 		if (!isRunning())
 			throw new IllegalAccessError("Server not initialized!");
 
-		connections.put(idCounter.incrementAndGet(), networkConnection);
+		connections.put((idCounter+1), networkConnection);
 
 	}
 
@@ -211,12 +201,8 @@ public class Server extends BaseServerClientModel{
 		System.gc();
 	}
 
-	/**
-	 * Set the maximum connections the server can handle at once
-	 * @param maxConnections
-	 */
-	public void setMaxConnections(int maxConnections){
-		this.maxConnections = maxConnections;
+	public int getConnectionsCount(){
+		return connections.size();
 	}
 
 	/**

@@ -69,8 +69,8 @@ TransformProcessor<PacketEvent, String> stringTransformProcessor = Processors.To
 publisher.subscribe(stringTransformProcessor);
 
 ```
-We will be using the Flow API to create our decoding process,
-TransformProcessor is used to translate the item that the publisher push, into another type
+We will be using the Flow API to create our decoding process.
+TransformProcessor is used to translate the item that the publisher push, into another type.
 
 ```java
 public static TransformProcessor<PacketEvent, String> ToStringProcessor = new TransformProcessor<PacketEvent, String>(p -> new String(p.getPacket().getData().array()));
@@ -85,7 +85,7 @@ publisher.subscribe(toStringProcessor)
 Here we translate the PacketEvent into a String object
 #### Note: Processors.ToStringProcessor is a build class that is already been defined
 
-Then we can just create a Flow.Subscriber which will receive the object that it translate
+Then we can just create a Flow.Subscriber which will receive the object that it translate.
 ### Java
 ```java
 
@@ -144,7 +144,7 @@ class PrintLineSubscriber : Flow.Subscriber<String> {
 
 toStringProcessor.subscribe(PrintLineSubscriber())
 ```
-This creates a Flow.Subscriber which will print the message when the MessagePacket is received
+This creates a Flow.Subscriber which will print the message when the MessagePacket is received.
 
 # 4. Creating Server and Clients
 ## Server
@@ -164,8 +164,8 @@ for Asynchronous call which returns a CompletableFuture
 val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
 server.acceptIncomingConnectionAsync()
 ```
-This create a server instance with port configured to 5555 and with the packets factory that we created earlier
-<br>Calling server.acceptIncomingConnectionAsync() will tell the server to start listening for the first incoming connection
+This create a server instance with port configured to 5555 and with the packets factory that we created earlier.
+<br>Calling server.acceptIncomingConnectionAsync() will tell the server to start listening for the first incoming connection.
 ## Client
 ### Java
 ```java

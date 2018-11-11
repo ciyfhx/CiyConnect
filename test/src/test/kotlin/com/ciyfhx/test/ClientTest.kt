@@ -32,8 +32,37 @@
 
 package com.ciyfhx.test
 
+import com.ciyfhx.network.Packet
+import java8.util.concurrent.Flow
+import java.nio.ByteBuffer
+
 
 const val MESSAGING = 0x02
+
+data class Message(val message: String) : Packet(MESSAGING, ByteBuffer.wrap(message.toByteArray()))
+
+
+class PrintLineSubscriber : Flow.Subscriber<String> {
+
+    lateinit var subscription: Flow.Subscription
+    override fun onSubscribe(subscription: Flow.Subscription) {
+        this.subscription = subscription
+        println("Subscribe to $subscription")
+        subscription.request(1)
+    }
+
+    override fun onNext(item: String) {
+        println("Message: $item")
+        subscription.request(1)
+    }
+
+    override fun onError(throwable: Throwable) =
+        subscription.cancel()
+
+    override fun onComplete() =
+        println("Done")
+}
+
 
 fun main(args :Array<String>){
 

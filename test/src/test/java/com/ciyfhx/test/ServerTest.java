@@ -111,6 +111,7 @@ public class ServerTest {
 
 		server.acceptIncomingConnectionAsync().thenAccept(b -> {
 			b.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+			b.getSession().set("hello", "test");
 		});
 
 
@@ -126,7 +127,6 @@ public class ServerTest {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 			});
 			Thread.sleep(1000);
 		}

@@ -14,20 +14,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network;
+package com.ciyfhx.network
 
-public interface NetworkListener {
+import com.ciyfhx.builder.PipeLineStreamBuilder
 
-	/**
-	 * Called when there is new connection
-	 * @param connector
-	 */
-	public void connected(NetworkConnection connector);
+operator fun PipeLineStream.plusAssign(pipeLine: PipeLine) {
+    this.addPipeLine(pipeLine)
+}
 
-	/**
-	 * Called when there is a disconnection
-	 * @param disconnector
-	 */
-	public void disconnected(NetworkConnection disconnector);
-	
+operator fun PipeLineStream.minusAssign(pipeLine: PipeLine) {
+    this.removePipeLine(pipeLine)
 }

@@ -163,12 +163,23 @@ public class Server extends BaseServerClientModel{
 		return connections.entrySet().stream().map(con -> con.getValue());
 	}
 
+	/**
+	 * Close the server and all the existing connections
+	 */
 	public void close() {
 		if (!isRunning())
 			throw new IllegalStateException("Server is not running!");
 
-		running.set(false);
 
+		this.stream().forEach((con) -> {
+			try {
+				removeConnection(con);
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("Error closing network for {}", con);
+			}
+		});
+		running.set(false);
 	}
 
 	@Deprecated()
@@ -190,6 +201,11 @@ public class Server extends BaseServerClientModel{
 				new DataInputStream(socket.getInputStream()), socket);
 	}
 
+	/**
+	 * Add a new connection
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void addConnection(NetworkConnection networkConnection) throws IOException {
 		if (!isRunning())
 			throw new IllegalAccessError("Server not initialized!");
@@ -198,6 +214,11 @@ public class Server extends BaseServerClientModel{
 
 	}
 
+	/**
+	 * Forcefully remove an existing connection
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void removeConnection(NetworkConnection networkConnection) throws IOException {
 		if (!isRunning())
 			throw new IllegalAccessError("Server not initialized!");
@@ -206,11 +227,20 @@ public class Server extends BaseServerClientModel{
 
 	}
 
+	/**
+	 * Forcefully remove an existing connection from list
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void removeConnectionFromList(NetworkConnection networkConnection) {
 		connections.values().remove(networkConnection);
 		System.gc();
 	}
 
+	/**
+	 * The total amount of connections
+	 * @return
+	 */
 	public int getConnectionsCount(){
 		return connections.size();
 	}

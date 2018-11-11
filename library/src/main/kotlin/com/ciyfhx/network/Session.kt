@@ -29,7 +29,7 @@ open class Session protected constructor(val connection: NetworkConnection) {
      * @param sessionObj
      */
     operator fun set(key: String, sessionObj: Any){
-        session.put(key, sessionObj)
+        session[key] = sessionObj
     }
     /**
      * Get the session stored object with the key

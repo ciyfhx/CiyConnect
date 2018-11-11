@@ -23,5 +23,9 @@ infix fun String.bind(sessionObj: Any?): SessionPair {
 }
 
 operator fun Session.plusAssign(sessionPair: SessionPair) {
-    session.put(sessionPair.key, sessionPair.sessionObj)
+    session[sessionPair.key] = sessionPair.sessionObj
+}
+
+operator fun Session.minusAssign(sessionPair: SessionPair) {
+    session.remove(sessionPair.key, sessionPair.sessionObj)
 }

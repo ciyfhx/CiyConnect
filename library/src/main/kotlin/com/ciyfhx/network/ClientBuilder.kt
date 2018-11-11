@@ -21,7 +21,7 @@ import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher
 
 
-inline fun ClientBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
+fun ClientBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
                         packetsFactory: PacketsFactory = PacketsFactory()): Client {
     val client = Client(authenticationManager, packetsFactory)
 

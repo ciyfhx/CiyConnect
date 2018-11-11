@@ -75,47 +75,56 @@ fun main(args :Array<String>){
     val publisher = factory.registerId(PacketIDs.MESSAGING)
     val toStringProcessor = Processors.ToStringProcessor
 
-    publisher.subscribe(toStringProcessor)
-    toStringProcessor.subscribe(PrintLineSubscriber())
-
-    val client = ClientBuilder.newInstance().build(packetsFactory = factory)
-
-    client.networkListener = object : NetworkListener {
-        override fun disconnected(disconnector: NetworkConnection) {
-            println("Disconnector: " + disconnector.address)
-        }
-
-        override fun connected(connector: NetworkConnection) {
-            println("Connector: " + connector.address)
-        }
-    }
-
-
-
-    client.connectAsync("localhost", 5555).thenAccept {
-        println("Connected")
-        it.pipeLineStream.addPipeLine(CompressionPipeLine())
-    }
+//    publisher.subscribe(toStringProcessor)
+//    toStringProcessor.subscribe(PrintLineSubscriber())
+//
+//    val client = ClientBuilder.newInstance().build(packetsFactory = factory)
+//
+//    client.networkListener = object : NetworkListener {
+//        override fun disconnected(disconnector: NetworkConnection) {
+//            println("Disconnector: " + disconnector.address)
+//        }
+//
+//        override fun connected(connector: NetworkConnection) {
+//            println("Connector: " + connector.address)
+//        }
+//    }
+//
+//
+//
+//    client.connectAsync("localhost", 5555).thenAccept {
+//        println("Connected")
+//        it.pipeLineStream.addPipeLine(CompressionPipeLine())
+//    }
 
     val server = ServerBuilder.newInstance().build(
             port = 5555, packetsFactory = factory)
-    server.acceptIncomingConnectionAsync()
-
-    server.stream().forEach {
-        it.networkInterface.sendPacket(MessagingPacket("test"))
+    server.acceptIncomingConnectionAsync().thenAccept {
+        it.pipeLineStream += CompressionPipeLine()
+        it.session += "asd" bind "123"
     }
 
-    server.stream().foreach{
-        try {
-            it.getNetworkInterface().sendPacket(MessagingPacket("test"));
-        } catch (e: Exception) {
-            e.printStackTrace()
+    while(true){
+        server.stream().forEach {
+            it.networkInterface.sendPacket(MessagingPacket(readLine()))
+
         }
-
+        Thread.sleep(1000)
     }
 
-    server.stream().foreach{
-        it.
-    }
+
+
+//    server.stream().foreach{
+//        try {
+//            it.getNetworkInterface().sendPacket(MessagingPacket("test"));
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//
+//    }
+//
+//    server.stream().foreach{
+//        it.
+//    }
 
 }

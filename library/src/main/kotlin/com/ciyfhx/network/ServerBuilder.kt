@@ -20,7 +20,7 @@ import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher
 
-inline fun ServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
+fun ServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
                         packetsFactory: PacketsFactory = PacketsFactory(),
                         dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3), port: Int = 5555): Server {
     val server = Server(authenticationManager, packetsFactory, dispatcher)

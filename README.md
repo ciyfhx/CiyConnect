@@ -213,12 +213,41 @@ Client -> Server
 ```java
 client.sendPacket(new MessagingPacket("Hello"));
 ```
+
+
+
 ### Kotlin
 ```kotlin
 client.sendPacket(MessagingPacket("Hello"))
 ```
 
 # Advanced
+## Pipeline
+Pipeline is useful for doing pre-processing of data before its sent or receive by the subscriber
+
+
+Build-in piplines:<br>
+1. CompressionPipeLine<br>
+2. AESPipeLine<br>
+3. MACValidator<br>
+4. HMACValidator<br>
+
+<br>
+Custom pipeline can be define by implementing the PipeLine interface
+
+## Authentication Manager
+AuthenticationManager class handles server-client authentication before the connection is added to the list or accepted
+Default AuthenticationManager: RSAWithAESAuthenticationWithValidator
+
+RSAWithAESAuthentication creates a secure network by using an asymmetric key to authenticate connection and
+automatically add an AESPipeLine once the authentication succeed
+
+RSAWithAESAuthenticationWithValidator extends the function of RSAWithAESAuthentication by adding a MACValidator 
+once the authentication succeed
+
+Custom authentication manager can be define by extending the AuthenticationManager class
+## Session
+Session can be used to store a connection specific object
 
 ## Dependencies
 

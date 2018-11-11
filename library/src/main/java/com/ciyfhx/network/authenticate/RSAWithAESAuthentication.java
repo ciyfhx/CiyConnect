@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * RSAWithAESAuthentication start a three-way handshake for every new incoming connection.
+ * RSAWithAESAuthentication start a secure handshake for every new incoming connection.
  * An AESPipline will be automatically added to the connection once the three-way handshake succeed
  *  *</p>
  * @author  Peh Zi Heng

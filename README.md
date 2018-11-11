@@ -19,7 +19,7 @@ dependencies {
 
 ## Documentation
 ### 1. Registering packet id
-###Java
+### Java
 ```java
     
 public class PacketIDs {
@@ -34,7 +34,7 @@ PacketsFactory factory = new PacketsFactory();
 factory.registerIds(Arrays.asList(PacketIDs.MESSAGING));
 SubmissionPublisher<PacketEvent<Packet>> publisher = factory.getPublisher(PacketIDs.MESSAGING);
 ```
-###Kotlin
+### Kotlin
 ```kotlin
 const val MESSAGING = 0x01
 ```
@@ -46,7 +46,7 @@ val publisher = factory.registerId(MESSAGING)
 Packets send using CiyConnect has to be first registered with the corresponding packet's id
 
 ### 2. Creating packet
-###Java
+### Java
 ```java
 
 public class MessagingPacket extends Packet {
@@ -70,7 +70,7 @@ publisher.subscribe(stringTransformProcessor);
 
 ```
 We will be using the Flow API to create our decoding process,
-TransformProcessor is used to translate the item that the publisher pushed into another type
+TransformProcessor is used to translate the item that the publisher push, into another type
 
 ```java
 public static TransformProcessor<PacketEvent, String> ToStringProcessor = new TransformProcessor<PacketEvent, String>(p -> new String(p.getPacket().getData().array()));
@@ -85,7 +85,8 @@ publisher.subscribe(toStringProcessor)
 Here we translate the PacketEvent into a String object
 #### Note: Processors.ToStringProcessor is a build class that is already been defined
 
-Then we can just create a Flow.Subscriber which will receive the object that is translates
+Then we can just create a Flow.Subscriber which will receive the object that it translate
+### Java
 ```java
 
 public class PrintLineSubscriber implements Flow.Subscriber<String>{
@@ -117,6 +118,7 @@ public class PrintLineSubscriber implements Flow.Subscriber<String>{
 
 stringTransformProcessor.subscribe(new PrintLineSubscriber());
 ```
+### Kotlin
 ```kotlin
 class PrintLineSubscriber : Flow.Subscriber<String> {
 
@@ -143,6 +145,80 @@ class PrintLineSubscriber : Flow.Subscriber<String> {
 toStringProcessor.subscribe(PrintLineSubscriber())
 ```
 This creates a Flow.Subscriber which will print the message when the MessagePacket is received
+
+# 4. Creating Server and Clients
+## Server
+### Java
+```java
+Server server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build();
+
+server.acceptIncomingConnection();
+```
+or
+```java
+server.acceptIncomingConnectionAsync();
+```
+for Asynchronous call which returns a CompletableFuture
+### Kotlin
+```kotlin
+val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
+server.acceptIncomingConnectionAsync()
+```
+This create a server instance with port configured to 5555 and with the packets factory that we created earlier
+<br>Calling server.acceptIncomingConnectionAsync() will tell the server to start listening for the first incoming connection
+## Client
+### Java
+```java
+Client client = ClientBuilder.newInstance().withPacketsFactory(factory).build();
+
+client.connect("localhost", 5555);
+System.out.println("Connected");
+```
+or
+```java
+client.connectAsync("localhost", 5555).thenAccept((b) -> {
+
+    System.out.println("Connected");
+});
+```
+### Kotlin
+```kotlin
+val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
+client.connectAsync("localhost", 5555).thenAccept {
+    println("Connected")
+}
+```
+
+# 5. Sending Packets
+Server -> Client
+### Java
+```java
+server.stream().forEach(n -> {
+    try {
+        n.getNetworkInterface().sendPacket(new MessagingPacket("test"));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+});
+```
+### Kotlin
+```kotlin
+server.stream().forEach {
+        it.networkInterface.sendPacket(MessagingPacket("test"))
+}
+```
+#### Note: This will send the packet to call connected network interfaces/clients
+Client -> Server
+```java
+client.sendPacket(new MessagingPacket("Hello"));
+```
+### Kotlin
+```kotlin
+client.sendPacket(MessagingPacket("Hello"))
+```
+
+# Advanced
 
 ## Dependencies
 

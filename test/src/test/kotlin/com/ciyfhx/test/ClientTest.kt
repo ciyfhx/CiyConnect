@@ -32,7 +32,11 @@
 
 package com.ciyfhx.test
 
-import com.ciyfhx.network.Packet
+import com.ciyfhx.network.*
+import com.ciyfhx.processors.Processors
+import com.ciyfhx.test.BasicTest.server
+import com.ciyfhx.test.packet.MessagingPacket
+import com.ciyfhx.test.packet.PacketIDs
 import java8.util.concurrent.Flow
 import java.nio.ByteBuffer
 
@@ -66,14 +70,14 @@ class PrintLineSubscriber : Flow.Subscriber<String> {
 
 fun main(args :Array<String>){
 
-//    val factory = PacketsFactory()
-//
-//    val publisher = factory.registerId(PacketIDs.MESSAGING)
-//    val toStringProcessor = Processors.ToStringProcessor
-//
-//    publisher.subscribe(toStringProcessor)
-//    toStringProcessor.subscribe(PrintLineSubscriber())
-//
+    val factory = PacketsFactory()
+
+    val publisher = factory.registerId(PacketIDs.MESSAGING)
+    val toStringProcessor = Processors.ToStringProcessor
+
+    publisher.subscribe(toStringProcessor)
+    toStringProcessor.subscribe(PrintLineSubscriber())
+
 //    val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
 //
 //    client.networkListener = object : NetworkListener {
@@ -86,10 +90,31 @@ fun main(args :Array<String>){
 //        }
 //    }
 //
-//    client.connectAsync("localhost", 5555).thenAccept { b ->
+//
+//
+//    client.connectAsync("localhost", 5555).thenAccept {
 //        println("Connected")
-//        client.pipeLineStream.addPipeLine(CompressionPipeLine())
 //    }
 
+
+    val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
+    server.acceptIncomingConnectionAsync()
+
+    server.stream().forEach {
+        it.networkInterface.sendPacket(MessagingPacket("test"))
+    }
+
+    server.stream().foreach{
+        try {
+            it.getNetworkInterface().sendPacket(MessagingPacket("test"));
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    server.stream().foreach{
+        it.
+    }
 
 }

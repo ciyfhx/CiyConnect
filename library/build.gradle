@@ -22,12 +22,12 @@ bintray {
         repo = 'maven'
         name = 'CiyConnect'
         userOrg = user
-        licenses = ['Apache-2.0']
+        licenses = ['GPL-2.0+CE']
         vcsUrl = 'https://github.com/ciyfhx/CiyConnect.git'
         version {
-            name = '1.1.0'
+            name = '1.2.0'
             desc = 'A Java library for creating TCP server and client'
-            vcsTag = '1.1.0'
+            vcsTag = '1.2.0'
             publish = true
         }
     }

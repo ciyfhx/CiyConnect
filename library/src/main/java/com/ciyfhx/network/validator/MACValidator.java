@@ -30,13 +30,12 @@ import java.util.Arrays;
 /**
  * <p>
  * MAC - Message Authenticated Code
- * @see java.util.concurrent.ExecutorService
  *</p>
  * <p>
  * Check if the message receive is not tampered by computing the checksum of SHA512
  * <b>Formula:</b> <i>Digest = (SHA512(MESSAGE | SECRET))</i>
  * <b>Note:</b> The MAC's hashed function used by this class is susceptible to length extension attack
- * @see HMACValidator
+ * @see com.ciyfhx.validator.HMACValidator
  * </p>
  * @author  Peh Zi Heng
  * @version 1.0
@@ -79,7 +78,7 @@ public class MACValidator implements SecretInterface{
         return (ByteBuffer.allocate(data.capacity()+64).put(data).put(hashed));
     }
 
-    private ByteBuffer getSHA512SecurePassword(ByteBuffer data, ByteBuffer secret){
+    protected ByteBuffer getSHA512SecurePassword(ByteBuffer data, ByteBuffer secret){
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(secret);

@@ -265,7 +265,18 @@ client.connectAsync("localhost", 5555).thenAccept(con -> {
     con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
 });
 ```
+### Kotlin
+```kotlin
+//Server
+server.acceptIncomingConnectionAsync().thenAccept {
+    it.pipeLineStream += CompressionPipeLine()
+}
 
+//Client
+client.connectAsync("localhost", 5555).thenAccept {
+    it.pipeLineStream += CompressionPipeLine()
+}
+```
 ## Authentication Manager
 AuthenticationManager class handles server-client authentication before the connection is added to the list or accepted
 Default AuthenticationManager: RSAWithAESAuthenticationWithValidator
@@ -279,7 +290,36 @@ once the authentication succeed
 Custom authentication manager can be define by extending the AuthenticationManager class
 ## Session
 Session can be used to store a connection specific object
+#### Note: Session object is not shared
 
+### Java
+```java
+//Server
+server.acceptIncomingConnectionAsync().thenAccept(con -> {
+    con.getSession().set("mykey", "random");
+});
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept(con -> {
+    con.getSession().set("mykey", "random");
+});
+```
+
+### Kotlin
+```kotlin
+
+//Server
+server.acceptIncomingConnectionAsync().thenAccept {
+    it.session += "mykey" bind "random"
+}
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept {
+    it.session += "mykey" bind "random"
+}
+
+
+```
 ## Dependencies
 
 | Github        | Maven           | 

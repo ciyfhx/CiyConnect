@@ -7,11 +7,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CiyConnect_test.iml" filepath="$PROJECT_DIR$/.idea/modules/CiyConnect_test.iml" group="CiyConnect" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library.iml" group="library" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_main.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_main.iml" group="library" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_src.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_src.iml" group="library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_src.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_src.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library_test.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library_test.iml" group="library" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test/test.iml" filepath="$PROJECT_DIR$/.idea/modules/test/test.iml" group="test" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test/test_main.iml" filepath="$PROJECT_DIR$/.idea/modules/test/test_main.iml" group="test" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/test/test_src.iml" filepath="$PROJECT_DIR$/.idea/modules/test/test_src.iml" group="test" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/test/test_test.iml" filepath="$PROJECT_DIR$/.idea/modules/test/test_test.iml" group="test" />
     </modules>
   </component>

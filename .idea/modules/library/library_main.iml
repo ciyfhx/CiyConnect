@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id=":library:main" external.linked.project.path="$MODULE_DIR$/../../../library" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.ciyfhx" external.system.module.type="sourceSet" external.system.module.version="1.0.2" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_9">
+<module external.linked.project.id=":library:main" external.linked.project.path="$MODULE_DIR$/../../../library" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.ciyfhx" external.system.module.type="sourceSet" external.system.module.version="1.1.0" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.8" useProjectSettings="false">
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/../../../library/build/classes/kotlin/main" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="ciyconnect" />
+          <option name="jvmTarget" value="1.8" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.2" />
+          <option name="apiVersion" value="1.2" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../../library/out/production/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../../library/src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../../library/src/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../library/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../library/src/main/kotlin" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.31" level="project" />
+    <orderEntry type="library" name="Gradle: net.sourceforge.streamsupport:streamsupport-flow:1.6.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: net.sourceforge.streamsupport:streamsupport-cfuture:1.6.3" level="project" />
+    <orderEntry type="library" name="Gradle: net.sourceforge.streamsupport:streamsupport:1.6.3" level="project" />
   </component>
 </module>

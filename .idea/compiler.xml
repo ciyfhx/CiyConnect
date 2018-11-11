@@ -2,14 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="CiyConnect_main" target="1.9" />
-      <module name="CiyConnect_test" target="1.9" />
-      <module name="library_main" target="1.9" />
-      <module name="library_src" target="1.9" />
-      <module name="library_test" target="1.9" />
-      <module name="test_main" target="1.9" />
-      <module name="test_src" target="1.9" />
-      <module name="test_test" target="1.9" />
+      <module name="CiyConnect_main" target="1.8" />
+      <module name="CiyConnect_test" target="1.8" />
+      <module name="library_main" target="1.8" />
+      <module name="library_src" target="11" />
+      <module name="library_test" target="1.8" />
+      <module name="test_main" target="1.8" />
+      <module name="test_src" target="1.8" />
+      <module name="test_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

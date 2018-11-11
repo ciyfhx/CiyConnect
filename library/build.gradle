@@ -1,20 +1,15 @@
-
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
+
+
 }
 
 archivesBaseName = "ciyconnect"
 
-apply plugin: 'java'
 
 sourceSets {
-    src {
-        main {
-            java{
-                srcDir 'src/main'
-            }
-        }
-    }
+    main.java.srcDir 'src/main/java'
+    main.kotlin.srcDir 'src/main/kotlin'
 }
 
 bintray {

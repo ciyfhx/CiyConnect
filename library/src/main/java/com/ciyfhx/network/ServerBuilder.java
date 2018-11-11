@@ -29,7 +29,10 @@ public final class ServerBuilder {
 
     private PacketsFactory packetsFactory = new PacketsFactory();
 
-    private ServerConnectionDispatcher dispatcher = new FixedServerConnectionDispatcher();
+    private ServerConnectionDispatcher dispatcher = new FixedServerConnectionDispatcher(3);
+
+    private ServerBuilder() {}
+
 
     public static ServerBuilder newInstance(){
         return new ServerBuilder();

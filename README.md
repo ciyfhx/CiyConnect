@@ -161,7 +161,8 @@ server.acceptIncomingConnectionAsync();
 for Asynchronous call which returns a CompletableFuture
 ### Kotlin
 ```kotlin
-val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
+val server = ServerBuilder.newInstance().build(
+            port = 5555, packetsFactory = factory)
 server.acceptIncomingConnectionAsync()
 ```
 This create a server instance with port configured to 5555 and with the packets factory that we created earlier.
@@ -183,7 +184,7 @@ client.connectAsync("localhost", 5555).thenAccept((b) -> {
 ```
 ### Kotlin
 ```kotlin
-val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
+val client = ClientBuilder.newInstance().build(packetsFactory = factory)
 client.connectAsync("localhost", 5555).thenAccept {
     println("Connected")
 }

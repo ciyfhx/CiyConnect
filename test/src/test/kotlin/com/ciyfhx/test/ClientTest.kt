@@ -78,7 +78,7 @@ fun main(args :Array<String>){
     publisher.subscribe(toStringProcessor)
     toStringProcessor.subscribe(PrintLineSubscriber())
 
-    val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
+    val client = ClientBuilder.newInstance().build(packetsFactory = factory)
 
     client.networkListener = object : NetworkListener {
         override fun disconnected(disconnector: NetworkConnection) {
@@ -97,8 +97,8 @@ fun main(args :Array<String>){
         it.pipeLineStream.addPipeLine(CompressionPipeLine())
     }
 
-
-    val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
+    val server = ServerBuilder.newInstance().build(
+            port = 5555, packetsFactory = factory)
     server.acceptIncomingConnectionAsync()
 
     server.stream().forEach {

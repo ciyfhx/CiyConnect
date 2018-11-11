@@ -24,6 +24,7 @@ public final class ClientBuilder {
 
     private PacketsFactory packetsFactory = new PacketsFactory();
 
+    private ClientBuilder() {}
 
     public static ClientBuilder newInstance(){
         return new ClientBuilder();

@@ -78,8 +78,6 @@ public class ServerTest {
 
 		publisher.subscribe(stringTransformProcessor);
 		stringTransformProcessor.subscribe(new PrintLineSubscriber());
-
-
 		Server server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
 				.withServerConnectionDispatcher(new CachedServerConnectionDispatcher()).build();
 

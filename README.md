@@ -222,6 +222,21 @@ client.sendPacket(MessagingPacket("Hello"))
 ```
 
 # Advanced
+## Dispatcher
+Dispatcher defines how the server handle connections and threads
+
+FixedServerConnectionDispatcher - Create a fixed thread pool, can only handle limit request. (Default) maxConnection = 3
+CachedServerConnectionDispatcher - Create a cached thread pool, will reuse thread if available, if not create new thread
+
+```java
+
+ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
+				.withServerConnectionDispatcher(new FixedServerConnectionDispatcher(3)).build();
+
+ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
+				.withServerConnectionDispatcher(new CachedServerConnectionDispatcher()).build();
+```
+
 ## Pipeline
 Pipeline is useful for doing pre-processing of data before its sent or receive by the subscriber
 
@@ -233,7 +248,22 @@ Build-in piplines:<br>
 4. HMACValidator<br>
 
 <br>
-Custom pipeline can be define by implementing the PipeLine interface
+Custom pipeline can be define by implementing the PipeLine interface.
+
+To add a pipeline,
+Example:
+### Java
+```java
+//Server
+server.acceptIncomingConnectionAsync().thenAccept(con -> {
+    con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+});
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept(con -> {
+    con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+});
+```
 
 ## Authentication Manager
 AuthenticationManager class handles server-client authentication before the connection is added to the list or accepted

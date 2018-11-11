@@ -78,23 +78,24 @@ fun main(args :Array<String>){
     publisher.subscribe(toStringProcessor)
     toStringProcessor.subscribe(PrintLineSubscriber())
 
-//    val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
-//
-//    client.networkListener = object : NetworkListener {
-//        override fun disconnected(disconnector: NetworkConnection) {
-//            println("Disconnector: " + disconnector.address)
-//        }
-//
-//        override fun connected(connector: NetworkConnection) {
-//            println("Connector: " + connector.address)
-//        }
-//    }
-//
-//
-//
-//    client.connectAsync("localhost", 5555).thenAccept {
-//        println("Connected")
-//    }
+    val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
+
+    client.networkListener = object : NetworkListener {
+        override fun disconnected(disconnector: NetworkConnection) {
+            println("Disconnector: " + disconnector.address)
+        }
+
+        override fun connected(connector: NetworkConnection) {
+            println("Connector: " + connector.address)
+        }
+    }
+
+
+
+    client.connectAsync("localhost", 5555).thenAccept {
+        println("Connected")
+        it.pipeLineStream.addPipeLine(CompressionPipeLine())
+    }
 
 
     val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()

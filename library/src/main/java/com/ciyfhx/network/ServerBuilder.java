@@ -51,7 +51,7 @@ public final class ServerBuilder {
         return this;
     }
 
-    public ServerBuilder withPacketsFactory(ServerConnectionDispatcher dispatcher){
+    public ServerBuilder withServerConnectionDispatcher(ServerConnectionDispatcher dispatcher){
         this.dispatcher = dispatcher;
         return this;
     }

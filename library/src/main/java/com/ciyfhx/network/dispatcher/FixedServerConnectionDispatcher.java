@@ -44,10 +44,15 @@ public class FixedServerConnectionDispatcher implements ServerConnectionDispatch
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(FixedServerConnectionDispatcher.class);
 
+    //maximum connections the server can handle at once
     protected int maxConnections = 3;
 
+    private ExecutorService executorService;
 
-	private ExecutorService executorService = Executors.newFixedThreadPool(3);
+    public FixedServerConnectionDispatcher(int maxConnections) {
+        this.maxConnections = maxConnections;
+        this.executorService = Executors.newFixedThreadPool(this.maxConnections);
+    }
 
     /**
      *  Dispatch new connection to the pool thread
@@ -73,12 +78,10 @@ public class FixedServerConnectionDispatcher implements ServerConnectionDispatch
     }
 
     /**
-     * Set the maximum connections the server can handle at once
-     * @param maxConnections
+     * Return the maximum connections
+     * @return
      */
-    public void setMaxConnections(int maxConnections){
-        this.maxConnections = maxConnections;
+    public int getMaxConnections() {
+        return maxConnections;
     }
-
-
 }

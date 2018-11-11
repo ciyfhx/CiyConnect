@@ -57,11 +57,9 @@ public class ClientTest {
 			}
 		});
 
-		client.connectAsync("localhost", 5555).thenAccept((b) -> {
-
-			System.out.println("Connected");
-			client.getPipeLineStream().addPipeLine(new CompressionPipeLine());
-		});
+//		client.connectAsync("localhost", 5555).thenAccept(_ -> {
+//
+//		})
 
 		//Blocking
 		while(true){

@@ -31,7 +31,9 @@ fun main(args: Array<String>) {
     publisher.subscribe(toStringProcessor)
     toStringProcessor.subscribe(PrintLineSubscriber())
     val server = ServerBuilder.newInstance().build(
-            port = 5555)
+            port = 5555,
+            packetsFactory = packageFactory
+            )
     runBlocking(Dispatchers.IO){
         server.acceptIncomingConnection()
 

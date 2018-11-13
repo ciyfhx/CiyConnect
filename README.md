@@ -230,6 +230,7 @@ Dispatcher defines how the server handle connections and threads
 FixedServerConnectionDispatcher - Create a fixed thread pool, can only handle limit request. (Default) maxConnection = 3
 CachedServerConnectionDispatcher - Create a cached thread pool, will reuse thread if available, if not create new thread
 
+### Java
 ```java
 
 ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
@@ -237,6 +238,21 @@ ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
 
 ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
 				.withServerConnectionDispatcher(new CachedServerConnectionDispatcher()).build();
+```
+
+### Kotlin
+```kotlin
+
+    val server = ServerBuilder.newInstance().build(
+            port = 5555,
+            packetsFactory = packageFactory,
+            dispatcher = FixedServerConnectionDispatcher(3)
+    )
+    val server = ServerBuilder.newInstance().build(
+            port = 5555,
+            packetsFactory = packageFactory,
+            dispatcher = CachedServerConnectionDispatcher()
+    )
 ```
 
 ## Pipeline

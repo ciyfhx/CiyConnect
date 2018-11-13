@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    compile 'net.sourceforge.streamsupport:streamsupport-flow:1.6.3'
     compile "com.ciyfhx:ciyconnect:1.2.0"
 }
 ```
@@ -320,6 +321,26 @@ client.connectAsync("localhost", 5555).thenAccept {
 
 
 ```
+
+## With Coroutines
+### Kotlin
+
+```kotlin
+runBlocking(Dispatchers.IO){
+    async {
+        server.stream().findFirst().map {
+            it.networkInterface.sendPacket(MessagePacket("HI"))
+        }
+    }
+    async {
+        server.stream().findFirst().map {
+            it.networkInterface.sendPacket(MessagePacket("HI2"))
+        }
+    }
+
+}
+```
+
 ## Dependencies
 
 | Github        | Maven           | 

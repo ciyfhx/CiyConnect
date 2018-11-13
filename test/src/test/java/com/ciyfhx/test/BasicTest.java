@@ -24,7 +24,7 @@ import com.ciyfhx.test.packet.MessagingPacket;
 import com.ciyfhx.test.packet.PacketIDs;
 import java8.util.concurrent.Flow;
 import java8.util.concurrent.SubmissionPublisher;
-import org.junit.BeforeClass;
+import org.testng.annotations.BeforeClass;
 import org.junit.Test;
 import org.slf4j.impl.SimpleLogger;
 

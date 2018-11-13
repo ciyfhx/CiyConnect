@@ -243,16 +243,16 @@ ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
 ### Kotlin
 ```kotlin
 
-    val server = ServerBuilder.newInstance().build(
-            port = 5555,
-            packetsFactory = packageFactory,
-            dispatcher = FixedServerConnectionDispatcher(3)
-    )
-    val server = ServerBuilder.newInstance().build(
-            port = 5555,
-            packetsFactory = packageFactory,
-            dispatcher = CachedServerConnectionDispatcher()
-    )
+val server = ServerBuilder.newInstance().build(
+        port = 5555,
+        packetsFactory = packageFactory,
+        dispatcher = FixedServerConnectionDispatcher(3)
+)
+val server = ServerBuilder.newInstance().build(
+        port = 5555,
+        packetsFactory = packageFactory,
+        dispatcher = CachedServerConnectionDispatcher()
+)
 ```
 
 ## Pipeline

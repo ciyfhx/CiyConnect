@@ -25,7 +25,7 @@ import java.nio.ByteBuffer
 
 class RSAWithAESAuthenticationWithHMACValidator : RSAWithAESAuthenticationWithMACValidator() {
 
-    private val validator: HMACValidator = HMACValidator()
+    init {validator = HMACValidator()}
 
     val logger = LoggerFactory.getLogger(RSAWithAESAuthenticationWithHMACValidator::class.java)!!
 

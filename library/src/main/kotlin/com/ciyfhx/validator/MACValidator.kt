@@ -45,7 +45,6 @@ open class MACValidator : PipeLine {
 
     private val logger = LoggerFactory.getLogger(MACValidator::class.java)
 
-    @Throws(Exception::class)
     override fun read(data: ByteBuffer): ByteBuffer {
         data.clear()
 
@@ -65,7 +64,6 @@ open class MACValidator : PipeLine {
             throw InvalidHashException("Computed hash and the hash receive is not the same")
     }
 
-    @Throws(Exception::class)
     override fun write(data: ByteBuffer): ByteBuffer {
         if (senderSecret == null) throw RuntimeException("Sender Secret/Salt is not set")
 

@@ -34,6 +34,16 @@ public class BaseServerClientModel {
     //Uses for creating the standard protocol
     protected Class networkInterfaceClass = DefaultInterfaceProtocol.class;
 
+    private boolean useSSL  = false;
+
+    protected void setUseSSL(boolean useSSL){
+        this.useSSL = useSSL;
+    }
+
+    public boolean UseSSL(){
+        return useSSL;
+    }
+
     /**
      * Set the Network listener
      * @param networkListener

@@ -22,6 +22,7 @@ import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher;
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public final class ServerBuilder {
     private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
@@ -30,6 +31,10 @@ public final class ServerBuilder {
     private PacketsFactory packetsFactory = new PacketsFactory();
 
     private ServerConnectionDispatcher dispatcher = new FixedServerConnectionDispatcher(3);
+
+    private int backlog = 50;
+    private InetAddress bindAddress = InetAddress.getLocalHost();
+    private boolean useSSL = false;
 
     private ServerBuilder() {}
 
@@ -63,7 +68,7 @@ public final class ServerBuilder {
     public Server build() throws IOException, IllegalAccessException {
         Server server = new Server(authenticationManager, packetsFactory, dispatcher);
 
-        server.init(port);
+        server.init(port, backlog, );
 
         return server;
     }

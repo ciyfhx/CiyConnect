@@ -19,6 +19,7 @@ package com.ciyfhx.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
@@ -30,6 +31,9 @@ import com.ciyfhx.network.authenticate.AuthenticationManager;
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocketFactory;
 
 public class Server extends BaseServerClientModel{
 
@@ -62,11 +66,11 @@ public class Server extends BaseServerClientModel{
 
 	/**
 	 * Initialize server socket
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 */
-	public void init(int port) throws IllegalAccessException, IOException {
+	private void init(int port, int backLog, InetAddress address, boolean useSSL) throws IllegalAccessException, IOException {
 		if (isRunning())
 			throw new IllegalAccessException("Server is already running");
 
@@ -86,7 +90,12 @@ public class Server extends BaseServerClientModel{
 			}
 		};
 
-		server = new ServerSocket(port);
+		if(useSSL){
+			ServerSocketFactory sslSocketFactory = SSLServerSocketFactory.getDefault();
+			server = sslSocketFactory.createServerSocket(port, backLog, address);
+		}else{
+			server = new ServerSocket(port, backLog, address);
+		}
 
 		init.set(true);
 	}

@@ -29,7 +29,7 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
 
     private Logger logger = LoggerFactory.getLogger(RSAWithAESAuthenticationWithMACValidator.class);
 
-    private MACValidator validator = new MACValidator();
+    protected MACValidator validator = new MACValidator();
 
     @Override
     public boolean serverAuthenticate(NetworkConnection connection) {
@@ -52,11 +52,11 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
         boolean success = super.clientAuthenticate(connection);
         if(success){
             byte[] senderSalt = receiveSalt(connection);
-            validator.setSecret(ByteBuffer.wrap(senderSalt));
+            validator.setSenderSecret(ByteBuffer.wrap(senderSalt));
             logger.debug("Done receiving validator salt");
 
             byte[] salt = generateSaltAndSend(connection);
-            validator.setSenderSecret(ByteBuffer.wrap(salt));
+            validator.setSecret(ByteBuffer.wrap(salt));
             logger.debug("Sent validator salt");
 
             return true;

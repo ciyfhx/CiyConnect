@@ -16,13 +16,11 @@
 
 package com.ciyfhx.network;
 
-import com.ciyfhx.network.validator.MACValidator;
-
 import java.nio.ByteBuffer;
 
 public interface PipeLine {
 	
-	ByteBuffer read(ByteBuffer data) throws Exception, MACValidator.InvalidHashException;
+	ByteBuffer read(ByteBuffer data) throws Exception;
 	ByteBuffer write(ByteBuffer data) throws Exception;
 	
 }

@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 public class TransformProcessor<T, R> extends SubmissionPublisher<R> implements Flow.Processor<T, R> {
 
-    private Function function;
+    private Function<? super T, ? extends R> function;
     private Flow.Subscription subscription;
 
     public TransformProcessor(Function<? super T, ? extends R> function) {

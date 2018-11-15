@@ -54,7 +54,6 @@ import java.util.Scanner;
 
 import com.ciyfhx.network.*;
 import com.ciyfhx.network.dispatcher.CachedServerConnectionDispatcher;
-import com.ciyfhx.network.validator.MACValidator;
 import com.ciyfhx.processors.Processors;
 import com.ciyfhx.processors.TransformProcessor;
 

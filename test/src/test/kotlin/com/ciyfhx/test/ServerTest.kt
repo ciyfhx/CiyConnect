@@ -17,14 +17,15 @@
 package com.ciyfhx.test
 
 import com.ciyfhx.network.*
-import com.ciyfhx.network.PrintLineSubscriber
 import com.ciyfhx.processors.Processors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.slf4j.impl.SimpleLogger
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
+    System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
     val packageFactory = PacketsFactory()
     val publisher = packageFactory.registerId(MESSAGE)
     val toStringProcessor = Processors.ToStringProcessor
@@ -50,7 +51,10 @@ fun main(args: Array<String>) {
             }
         }
 
-        println(time)
+        //println(time)
+
+    }
+    while(true){
 
     }
 

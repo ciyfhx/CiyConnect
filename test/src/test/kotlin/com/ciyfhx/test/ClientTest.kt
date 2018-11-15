@@ -1,9 +1,14 @@
 
 
-package com.ciyfhx.network
+package com.ciyfhx.test
 
+import com.ciyfhx.network.ClientBuilder
+import com.ciyfhx.network.Packet
+import com.ciyfhx.network.PacketsFactory
+import com.ciyfhx.network.build
 import com.ciyfhx.processors.Processors
 import java8.util.concurrent.Flow
+import org.slf4j.impl.SimpleLogger
 import java.nio.ByteBuffer
 
 const val MESSAGE = 1
@@ -30,6 +35,7 @@ class PrintLineSubscriber : Flow.Subscriber<String> {
 }
 
 fun main(args: Array<String>){
+    System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
     val packageFactory = PacketsFactory()
     val publisher = packageFactory.registerId(MESSAGE)
     val toStringProcessor = Processors.ToStringProcessor

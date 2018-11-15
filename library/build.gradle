@@ -12,6 +12,10 @@ sourceSets {
     main.kotlin.srcDir 'src/main/kotlin'
 }
 
+compileJava {
+    options.compilerArgs += ["-Xlint:unchecked"]
+}
+
 bintray {
     user = project.property('bintray.user')
     key = project.property('bintray.apikey')
@@ -25,9 +29,9 @@ bintray {
         licenses = ['GPL-2.0+CE']
         vcsUrl = 'https://github.com/ciyfhx/CiyConnect.git'
         version {
-            name = '1.3.0'
+            name = '1.4.0'
             desc = 'A Java library for creating TCP server and client'
-            vcsTag = '1.3.0'
+            vcsTag = '1.4.0'
             publish = true
         }
     }

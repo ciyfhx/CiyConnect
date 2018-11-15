@@ -17,7 +17,7 @@
 package com.ciyfhx.network.authenticate;
 
 import com.ciyfhx.network.NetworkConnection;
-import com.ciyfhx.network.validator.SecretInterface;
+import com.ciyfhx.validator.MACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +25,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
-public class RSAWithAESAuthenticationWithValidator extends RSAWithAESAuthentication {
+public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthentication {
 
-    private Logger logger = LoggerFactory.getLogger(RSAWithAESAuthenticationWithValidator.class);
+    private Logger logger = LoggerFactory.getLogger(RSAWithAESAuthenticationWithMACValidator.class);
 
-    private SecretInterface validator;
-
-    public RSAWithAESAuthenticationWithValidator(SecretInterface validator) {
-        this.validator = validator;
-    }
+    private MACValidator validator = new MACValidator();
 
     @Override
     public boolean serverAuthenticate(NetworkConnection connection) {
@@ -41,9 +37,11 @@ public class RSAWithAESAuthenticationWithValidator extends RSAWithAESAuthenticat
         if(success){
             byte[] salt = generateSaltAndSend(connection);
             validator.setSecret(ByteBuffer.wrap(salt));
+            logger.debug("Sent validator salt");
 
             byte[] senderSalt = receiveSalt(connection);
             validator.setSenderSecret(ByteBuffer.wrap(senderSalt));
+            logger.debug("Done receiving validator salt");
 
             return true;
         }else return false;
@@ -54,21 +52,22 @@ public class RSAWithAESAuthenticationWithValidator extends RSAWithAESAuthenticat
         boolean success = super.clientAuthenticate(connection);
         if(success){
             byte[] senderSalt = receiveSalt(connection);
-            validator.setSenderSecret(ByteBuffer.wrap(senderSalt));
+            validator.setSecret(ByteBuffer.wrap(senderSalt));
+            logger.debug("Done receiving validator salt");
 
             byte[] salt = generateSaltAndSend(connection);
-            validator.setSecret(ByteBuffer.wrap(salt));
+            validator.setSenderSecret(ByteBuffer.wrap(salt));
+            logger.debug("Sent validator salt");
 
             return true;
         }else return false;
     }
 
-    private byte[] generateSaltAndSend(NetworkConnection connection) {
+    protected byte[] generateSaltAndSend(NetworkConnection connection) {
         try {
             //Generate salt and send
             byte[] salt = super.randomSecureBytes(64);
             byte[] encryptedSalt = encrypt(salt, super.getSenderPublicKey());
-            logger.debug("Sending validator salt");
             super.sendBytes(connection, encryptedSalt);
             return salt;
         } catch (NoSuchAlgorithmException e) {
@@ -81,12 +80,10 @@ public class RSAWithAESAuthenticationWithValidator extends RSAWithAESAuthenticat
         return null;
     }
 
-    private byte[] receiveSalt(NetworkConnection connection) {
+    protected byte[] receiveSalt(NetworkConnection connection) {
         //Receive salt
         try {
-            logger.debug("Receiving validator salt");
             byte[] receiveSalt = decrypt(super.readBytes(connection), super.getKeyPair().getPrivate());
-            logger.debug("Done receiving validator salt");
             return receiveSalt;
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,7 +99,7 @@ public class RSAWithAESAuthenticationWithValidator extends RSAWithAESAuthenticat
         connection.getPipeLineStream().addPipeLine(validator);
     }
 
-    public SecretInterface getValidator() {
+    public MACValidator getValidator() {
         return validator;
     }
 }

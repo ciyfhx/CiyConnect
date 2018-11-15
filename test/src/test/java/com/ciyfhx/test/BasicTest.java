@@ -24,7 +24,7 @@ import com.ciyfhx.test.packet.MessagingPacket;
 import com.ciyfhx.test.packet.PacketIDs;
 import java8.util.concurrent.Flow;
 import java8.util.concurrent.SubmissionPublisher;
-import org.testng.annotations.BeforeClass;
+//import org.testng.annotations.BeforeClass;
 import org.junit.Test;
 import org.slf4j.impl.SimpleLogger;
 
@@ -39,7 +39,7 @@ public class BasicTest {
     static Server server;
     static Client client;
 
-    @BeforeClass
+    //@BeforeClass
     public static void setupConnection(){
         System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
 

@@ -11,7 +11,6 @@ repositories {
 }
 
 dependencies {
-    compile 'net.sourceforge.streamsupport:streamsupport-flow:1.6.3'
     compile "com.ciyfhx:ciyconnect:1.2.0"
 }
 ```

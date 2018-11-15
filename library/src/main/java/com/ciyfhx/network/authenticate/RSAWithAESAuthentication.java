@@ -35,7 +35,6 @@ import com.ciyfhx.network.AESPipeLine;
 import com.ciyfhx.network.NetworkConnection;
 import com.ciyfhx.builder.PipeLineStreamBuilder;
 import com.ciyfhx.network.PipeLineStream;
-import com.ciyfhx.network.validator.SecretInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

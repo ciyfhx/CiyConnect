@@ -18,7 +18,6 @@
 package com.ciyfhx.network.authenticate;
 
 import com.ciyfhx.network.NetworkConnection;
-import com.ciyfhx.network.validator.MACValidator;
 
 public abstract class AuthenticationManager {
 	
@@ -34,8 +33,8 @@ public abstract class AuthenticationManager {
 	
 	abstract public void authenticationTimeOut(NetworkConnection connection);
 
-	public static RSAWithAESAuthenticationWithValidator getDefaultAuthenticationManager() {
-		return new RSAWithAESAuthenticationWithValidator(new MACValidator());
+	public static AuthenticationManager getDefaultAuthenticationManager() {
+		return new RSAWithAESAuthentication();
 	}
 
 	public void setAuthenticationTimeOut(long authenticationTimeOut){

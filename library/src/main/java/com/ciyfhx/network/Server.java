@@ -43,18 +43,11 @@ public class Server extends BaseServerClientModel{
 	protected ServerSocket server;
 
 	protected ConcurrentHashMap<Long, NetworkConnection> connections = new ConcurrentHashMap<Long, NetworkConnection>();
-//
-//	protected AtomicInteger idCounter = new AtomicInteger(-1);
+
 	protected long idCounter = -1;
 
 	protected NetworkListener serverNetworkListener;
 
-
-
-//	protected int maxConnections = 3;
-
-//
-//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 	private ServerConnectionDispatcher dispatcher;
 
@@ -82,6 +75,12 @@ public class Server extends BaseServerClientModel{
 				removeConnectionFromList(disconnector);
 				if (networkListener != null)
 					networkListener.disconnected(disconnector);
+			}
+
+			@Override
+			public void preConnection(NetworkConnection connector) {
+				if (networkListener != null)
+					networkListener.preConnection(connector);
 			}
 
 			@Override
@@ -120,12 +119,9 @@ public class Server extends BaseServerClientModel{
 			NetworkConnection networkConnection = createNetworkConnection(socket);
 			networkConnection.setNetworkListener(serverNetworkListener);
 
-			//Check whether there is too many connections
-//			if(connections.size()>=maxConnections){
-//				logger.warn("{} attempt to connect but there are too many connections", networkConnection.getAddress());
-//				networkConnection.close();
-//				continue;
-//			}
+			//Call the pre connection listener
+			serverNetworkListener.preConnection(networkConnection);
+
 
 			// Check if authentication is null else we will just accept the
 			// connection
@@ -136,7 +132,6 @@ public class Server extends BaseServerClientModel{
 					authenticationManager.authenticationSuccess(networkConnection);
 
 					dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
-					//executorService.submit(networkConnection.createNetworkInterface());
 
 					addConnection(networkConnection);
 				} else {
@@ -146,7 +141,6 @@ public class Server extends BaseServerClientModel{
 			} else {
 				//If no authentication protocol is specified
 				dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
-				//executorService.submit(networkConnection.createNetworkInterface());
 
 				addConnection(networkConnection);
 			}

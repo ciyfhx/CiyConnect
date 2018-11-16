@@ -86,6 +86,9 @@ public class Client extends BaseServerClientModel{
 		networkConnection = new NetworkConnection(this, socket.getInetAddress(),
 				new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);
 		networkConnection.setNetworkListener(networkListener);
+
+		//Call the pre connection listener
+		networkListener.preConnection(networkConnection);
 		//networkConnection.setPipeLineStream(networkConnection.getPipeLineStream());
 
 		// Authenticate

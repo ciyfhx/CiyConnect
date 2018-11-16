@@ -14,30 +14,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network;
-
-public interface NetworkListener {
-
-	/**
-	 * Called before the connection is authenticated
-	 * @param connector
-	 */
-	void preConnection(NetworkConnection connector);
-
-	/**
-	 * Called when there is new connection after authenticated
-	 * @param connector
-	 */
-	void connected(NetworkConnection connector);
-
-	/**
-	 * Called when there is a disconnection
-	 * @param disconnector
-	 */
-	void disconnected(NetworkConnection disconnector);
+package com.ciyfhx.network
 
 
+internal inline fun NetworkConnection.sendBytes(data: ByteArray) {
+    this.dataOutputStream.also {
+        it.writeInt(data?.size!!)
+        it.write(data)
+        it.flush()
 
+    }
+}
 
-	
+internal inline fun NetworkConnection.readBytes(): ByteArray {
+    return this.dataInputStream.let{
+        val data = ByteArray(it.readInt())
+        it.read(data)
+        return data
+    }
 }

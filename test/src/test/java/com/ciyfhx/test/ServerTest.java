@@ -88,6 +88,11 @@ public class ServerTest {
 			}
 
 			@Override
+			public void preConnection(NetworkConnection connector) {
+
+			}
+
+			@Override
 			public void connected(NetworkConnection connector) {
 				//connector.getPipeLineStream().addPipeLine(new CompressionPipeLine());
 				System.out.println("Connector: " + connector.getAddress());

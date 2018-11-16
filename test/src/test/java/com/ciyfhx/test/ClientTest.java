@@ -52,6 +52,11 @@ public class ClientTest {
 			}
 
 			@Override
+			public void preConnection(NetworkConnection connector) {
+
+			}
+
+			@Override
 			public void connected(NetworkConnection connector) {
 				System.out.println("Connector: " + connector.getAddress());
 			}

@@ -33,7 +33,7 @@ fun ServerBuilder.build(authenticationManager: AuthenticationManager = Authentic
     return server
 }
 
-fun ServerBuilder.SSLServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
+fun SSLServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
                         packetsFactory: PacketsFactory = PacketsFactory(),
                         dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3),
                         port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost(),

@@ -9,7 +9,11 @@ import com.ciyfhx.network.build
 import com.ciyfhx.processors.Processors
 import java8.util.concurrent.Flow
 import org.slf4j.impl.SimpleLogger
+import java.io.FileInputStream
 import java.nio.ByteBuffer
+import java.security.KeyStore
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 const val MESSAGE = 1
 
@@ -35,6 +39,8 @@ class PrintLineSubscriber : Flow.Subscriber<String> {
 }
 
 fun main(args: Array<String>){
+
+    //System.setProperty("javax.net.ssl.trustStore", "D:\\keystore.jks")
     System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
     val packageFactory = PacketsFactory()
     val publisher = packageFactory.registerId(MESSAGE)
@@ -43,7 +49,7 @@ fun main(args: Array<String>){
     toStringProcessor.subscribe(PrintLineSubscriber())
 
     val client = ClientBuilder.newInstance().build(packetsFactory = packageFactory)
-    client.connectAsync("192.168.99.1", 5555).thenAccept {
+    client.connectAsync("192.168.99.1", 5555, SSLContext.getDefault()).thenAccept {
         println("Client Connected")
     }.exceptionally {
         it.printStackTrace()

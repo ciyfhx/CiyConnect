@@ -22,19 +22,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.slf4j.impl.SimpleLogger
+import java.io.FileInputStream
+import java.security.KeyStore
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
     System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
+
+
+    System.setProperty("javax.net.ssl.keyStore", "D:\\keystore.jks")
+    System.setProperty("javax.net.ssl.keyStorePassword", "ciyfhx")
+
+    val loc = "D:\\keystore.store"
+
     val packageFactory = PacketsFactory()
     val publisher = packageFactory.registerId(MESSAGE)
     val toStringProcessor = Processors.ToStringProcessor
     publisher.subscribe(toStringProcessor)
     toStringProcessor.subscribe(PrintLineSubscriber())
-    val server = ServerBuilder.newInstance().build(
-            port = 5555,
-            packetsFactory = packageFactory
-            )
+//    val server = ServerBuilder.newInstance().build(
+//            port = 5555,
+//            packetsFactory = packageFactory
+//            )
+
+
+    val server = SSLServerBuilder.newInstance().build(port = 5555)
     runBlocking(Dispatchers.IO){
         server.acceptIncomingConnection()
 

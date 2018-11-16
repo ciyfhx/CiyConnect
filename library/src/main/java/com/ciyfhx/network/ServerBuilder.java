@@ -28,17 +28,17 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 
 public class ServerBuilder {
-    private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
-    private int port = 5555;
+    protected AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
+    protected int port = 5555;
 
-    private PacketsFactory packetsFactory = new PacketsFactory();
+    protected PacketsFactory packetsFactory = new PacketsFactory();
 
-    private ServerConnectionDispatcher dispatcher = new FixedServerConnectionDispatcher(3);
+    protected ServerConnectionDispatcher dispatcher = new FixedServerConnectionDispatcher(3);
 
-    private int backlog = 50;
-    private InetAddress bindAddress = InetAddress.getLocalHost();
+    protected int backlog = 50;
+    protected InetAddress bindAddress = InetAddress.getLocalHost();
 
-    private ServerBuilder() throws UnknownHostException {}
+    protected ServerBuilder() throws UnknownHostException {}
 
     /**
      * Create the instance used to build a com.ciyfhx.network.Server
@@ -113,40 +113,6 @@ public class ServerBuilder {
         server.init(port, backlog, bindAddress, null);
 
         return server;
-    }
-
-
-    public class SSLServerBuilder extends ServerBuilder{
-
-        private SSLServerBuilder() throws UnknownHostException, NoSuchAlgorithmException {
-            super();
-            sslContext = SSLContext.getDefault();
-        }
-
-        private SSLContext sslContext;
-
-        /**
-         * Set the SSLContext used for creating SSL Socket
-         *
-         * <b>Note: </b> By default, the SSLContext.getDefault() will be used if not set
-         *
-         * @param sslContext
-         */
-        public void withSSLContext(SSLContext sslContext){
-            this.sslContext = sslContext;
-        }
-
-        @Override
-        public Server build() throws IOException, IllegalAccessException {
-            Server server = new Server(authenticationManager, packetsFactory, dispatcher);
-
-            server.init(port, backlog, bindAddress, sslContext);
-
-            return server;
-        }
-
-
-
     }
 
 

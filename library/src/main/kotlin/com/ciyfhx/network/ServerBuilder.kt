@@ -19,13 +19,28 @@ package com.ciyfhx.network
 import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher
+import java.net.InetAddress
+import javax.net.ssl.SSLContext
 
 fun ServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
                         packetsFactory: PacketsFactory = PacketsFactory(),
-                        dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3), port: Int = 5555): Server {
+                        dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3),
+                        port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost()): Server {
     val server = Server(authenticationManager, packetsFactory, dispatcher)
 
-    server.init(port)
+    server.init(port, backlog, address, null)
+
+    return server
+}
+
+fun ServerBuilder.SSLServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
+                        packetsFactory: PacketsFactory = PacketsFactory(),
+                        dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3),
+                        port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost(),
+                                         sslContext: SSLContext = SSLContext.getDefault()): Server {
+    val server = Server(authenticationManager, packetsFactory, dispatcher)
+
+    server.init(port, backlog, address, sslContext)
 
     return server
 }

@@ -43,12 +43,15 @@ fun main(args: Array<String>){
     toStringProcessor.subscribe(PrintLineSubscriber())
 
     val client = ClientBuilder.newInstance().build(packetsFactory = packageFactory)
-    client.connectAsync("localhost", 5555).thenAccept {
+    client.connectAsync("192.168.99.1", 5555).thenAccept {
         println("Client Connected")
+    }.exceptionally {
+        it.printStackTrace()
+        null
     }
 
     while(true){
-
+        Thread.sleep(1000)
     }
 
 }

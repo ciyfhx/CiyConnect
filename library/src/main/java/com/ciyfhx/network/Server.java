@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 
 public class Server extends BaseServerClientModel{
@@ -70,7 +71,7 @@ public class Server extends BaseServerClientModel{
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 */
-	private void init(int port, int backLog, InetAddress address, boolean useSSL) throws IllegalAccessException, IOException {
+	protected void init(int port, int backLog, InetAddress address, SSLContext sslContext) throws IllegalAccessException, IOException {
 		if (isRunning())
 			throw new IllegalAccessException("Server is already running");
 
@@ -90,12 +91,13 @@ public class Server extends BaseServerClientModel{
 			}
 		};
 
-		if(useSSL){
-			ServerSocketFactory sslSocketFactory = SSLServerSocketFactory.getDefault();
+		if(sslContext != null){
+			ServerSocketFactory sslSocketFactory = sslContext.getServerSocketFactory();
 			server = sslSocketFactory.createServerSocket(port, backLog, address);
 		}else{
 			server = new ServerSocket(port, backLog, address);
 		}
+
 
 		init.set(true);
 	}

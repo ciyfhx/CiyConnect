@@ -21,10 +21,13 @@ import com.ciyfhx.network.authenticate.AuthenticationManager;
 import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher;
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
 
-public final class ServerBuilder {
+public class ServerBuilder {
     private AuthenticationManager authenticationManager = AuthenticationManager.getDefaultAuthenticationManager();
     private int port = 5555;
 
@@ -34,13 +37,21 @@ public final class ServerBuilder {
 
     private int backlog = 50;
     private InetAddress bindAddress = InetAddress.getLocalHost();
-    private boolean useSSL = false;
 
-    private ServerBuilder() {}
+    private ServerBuilder() throws UnknownHostException {}
 
-
+    /**
+     * Create the instance used to build a com.ciyfhx.network.Server
+     * Returns null if unable to build
+     * @return
+     */
     public static ServerBuilder newInstance(){
-        return new ServerBuilder();
+        try {
+            return new ServerBuilder();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public ServerBuilder withPort(int port){
@@ -48,30 +59,97 @@ public final class ServerBuilder {
         return this;
     }
 
+    /**
+     * Set the number of clients that will be in a queue when initialing a connection before dropping
+     * @param backlog
+     */
+    public void withBacklog(int backlog){
+        this.backlog = backlog;
+    }
+
+
+    /**
+     * Set the authentication manager
+     * @see AuthenticationManager
+     * @param authenticationManger
+     * @return
+     */
     public ServerBuilder withAuthenticationManager(AuthenticationManager authenticationManger){
         this.authenticationManager = authenticationManger;
         return this;
     }
 
-
+    /**
+     * Set the packets factory
+     * @see PacketsFactory
+     * @param packetsFactory
+     * @return
+     */
     public ServerBuilder withPacketsFactory(PacketsFactory packetsFactory){
         this.packetsFactory = packetsFactory;
         return this;
     }
 
+    /**
+     * Set the server connection dispatcher
+     * @see ServerConnectionDispatcher
+     * @param dispatcher
+     * @return
+     */
     public ServerBuilder withServerConnectionDispatcher(ServerConnectionDispatcher dispatcher){
         this.dispatcher = dispatcher;
         return this;
     }
 
-
+    /**
+     * Create the server object with the given fields
+     * @return Created server object
+     * @throws IOException
+     * @throws IllegalAccessException
+     */
     public Server build() throws IOException, IllegalAccessException {
         Server server = new Server(authenticationManager, packetsFactory, dispatcher);
 
-        server.init(port, backlog, );
+        server.init(port, backlog, bindAddress, null);
 
         return server;
     }
+
+
+    public class SSLServerBuilder extends ServerBuilder{
+
+        private SSLServerBuilder() throws UnknownHostException, NoSuchAlgorithmException {
+            super();
+            sslContext = SSLContext.getDefault();
+        }
+
+        private SSLContext sslContext;
+
+        /**
+         * Set the SSLContext used for creating SSL Socket
+         *
+         * <b>Note: </b> By default, the SSLContext.getDefault() will be used if not set
+         *
+         * @param sslContext
+         */
+        public void withSSLContext(SSLContext sslContext){
+            this.sslContext = sslContext;
+        }
+
+        @Override
+        public Server build() throws IOException, IllegalAccessException {
+            Server server = new Server(authenticationManager, packetsFactory, dispatcher);
+
+            server.init(port, backlog, bindAddress, sslContext);
+
+            return server;
+        }
+
+
+
+    }
+
+
 
 
 

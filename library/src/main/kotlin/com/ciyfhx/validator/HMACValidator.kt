@@ -19,14 +19,16 @@ package com.ciyfhx.validator
 import org.slf4j.LoggerFactory
 import java.nio.ByteBuffer
 import java.util.*
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+
+
 
 
 /**
  *
  *
  * HMAC - keyed-hash message authentication code or hash-based message authentication code
- * HMAC basically uses two keys instead of one
- *
  *
  *
  * Check if the message receive is not tampered by computing the checksum of SHA512
@@ -37,11 +39,7 @@ import java.util.*
  * @since   2018-10-10
  */
 class HMACValidator : MACValidator() {
-
-    internal var secret2: ByteBuffer? = null
-    internal var senderSecret2: ByteBuffer? = null
-
-    private val logger = LoggerFactory.getLogger(MACValidator::class.java)
+    private val logger = LoggerFactory.getLogger(HMACValidator::class.java)
 
     override fun read(data: ByteBuffer): ByteBuffer {
         data.clear()
@@ -52,10 +50,10 @@ class HMACValidator : MACValidator() {
         data.get(hashed)
 
         val contentBB = ByteBuffer.wrap(content)
-        if (secret == null || secret2 == null) throw RuntimeException("Secret/Salt is not set")
-        val computedHash = ValidatorUtils.getSHA512SecurePassword(ValidatorUtils.getSHA512SecurePassword(contentBB, secret), secret2)
+        if (secret == null) throw RuntimeException("Secret/Salt is not set")
+        val computedHash = getHMACHashed(data, secret)
 
-        if (Arrays.equals(computedHash?.array(), hashed)) {
+        if (Arrays.equals(computedHash.array(), hashed)) {
             logger.trace("Computed hashed is correct")
             return contentBB
         } else
@@ -63,14 +61,25 @@ class HMACValidator : MACValidator() {
     }
 
     override fun write(data: ByteBuffer): ByteBuffer {
-        if (senderSecret2 == null) throw RuntimeException("Sender Secret2/Salt2 is not set")
+        if (senderSecret == null) throw RuntimeException("Sender Secret/Salt is not set")
 
-        val hashed = super.write(data)
-
-        val hashed2 = ValidatorUtils.getSHA512SecurePassword(hashed, senderSecret2)
-        logger.trace("Computed hashed 2 {}", hashed2?.capacity())
+        val hashed = getHMACHashed(data, senderSecret)
+        logger.trace("Computed HMAC hashed {}", hashed.capacity())
         data.clear()
         hashed.clear()
         return ByteBuffer.allocate(data.capacity() + 64).put(data).put(hashed)
     }
+
+    companion object {
+
+        private const val ALGORITHM = "HmacSHA512"
+
+        private fun getHMACHashed(data: ByteBuffer?, key: ByteBuffer?): ByteBuffer{
+            val signingKey = SecretKeySpec(key?.array(), ALGORITHM)
+            val mac = Mac.getInstance(ALGORITHM)
+            mac.init(signingKey)
+            return ByteBuffer.wrap(mac.doFinal(data?.array()))
+        }
+    }
+
 }

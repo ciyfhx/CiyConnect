@@ -19,7 +19,7 @@ package com.ciyfhx.network.authentication
 import com.ciyfhx.network.NetworkConnection
 import com.ciyfhx.network.authenticate.AuthenticationManager
 
-class AuthenticationManagerList(val list: Array<AuthenticationManager>) : AuthenticationManager() {
+class AuthenticationManagerList(private vararg val list: AuthenticationManager) : AuthenticationManager() {
 
     override fun serverAuthenticate(connection: NetworkConnection?): Boolean {
         var serverAuthenticate = false

@@ -106,7 +106,7 @@ public class Server extends BaseServerClientModel{
 	 * 
 	 * @throws IOException
 	 */
-	public NetworkConnection acceptIncomingConnection() throws IOException {
+	public NetworkConnection acceptIncomingConnection() throws Exception {
 		if (!init.get())
 			throw new IllegalStateException("Server not initialized!");
 
@@ -157,7 +157,7 @@ public class Server extends BaseServerClientModel{
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return acceptIncomingConnection();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		});

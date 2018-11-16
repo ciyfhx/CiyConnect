@@ -17,16 +17,16 @@
 package com.ciyfhx.network
 
 
-internal inline fun NetworkConnection.sendBytes(data: ByteArray) {
+internal fun NetworkConnection.sendBytes(data: ByteArray) {
     this.dataOutputStream.also {
-        it.writeInt(data?.size!!)
+        it.writeInt(data.size)
         it.write(data)
         it.flush()
 
     }
 }
 
-internal inline fun NetworkConnection.readBytes(): ByteArray {
+internal fun NetworkConnection.readBytes(): ByteArray {
     return this.dataInputStream.let{
         val data = ByteArray(it.readInt())
         it.read(data)

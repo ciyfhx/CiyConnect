@@ -17,12 +17,18 @@
 package com.ciyfhx.test
 
 import com.ciyfhx.network.*
+import com.ciyfhx.network.authenticate.AuthenticationManager
+import com.ciyfhx.network.authentication.AuthenticationManagerList
+import com.ciyfhx.network.authentication.SimpleAuthenticationManager
+import com.ciyfhx.network.authentication.credential
 import com.ciyfhx.processors.Processors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.slf4j.impl.SimpleLogger
 import java.io.FileInputStream
+import java.io.IOException
+import java.lang.Exception
 import java.security.KeyStore
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
@@ -47,22 +53,56 @@ fun main(args: Array<String>) {
 //            packetsFactory = packageFactory
 //            )
 
-
-    val server = SSLServerBuilder.newInstance().build(port = 5555)
+    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(), SimpleAuthenticationManager("hello" credential "123".toCharArray()))
+    val server = SSLServerBuilder.newInstance().build(port = 5555, authenticationManager = authenticationManager)
     runBlocking(Dispatchers.IO){
-        server.acceptIncomingConnection()
+        var b = false
+        while(true){
 
-        val time = measureTimeMillis {
-            async {
-                server.stream().findFirst().map {
-                    it.networkInterface.sendPacket(MessagePacket("HI"))
+            if(!b){
+                server.acceptIncomingConnectionAsync().thenAccept {
+
+                    val time = measureTimeMillis {
+                        async {
+                            server.stream().findFirst().map {
+                                it.networkInterface.sendPacket(MessagePacket("HI"))
+                            }
+                        }
+                        async {
+                            server.stream().findFirst().map {
+                                it.networkInterface.sendPacket(MessagePacket("HI2"))
+                            }
+                        }
+                    }
+                    b = false
+                }.exceptionally {
+                    println("Error")
+                    b = false
+                    null
                 }
+                b = true
             }
-            async {
-                server.stream().findFirst().map {
-                    it.networkInterface.sendPacket(MessagePacket("HI2"))
-                }
-            }
+
+
+//            try {
+//                server.acceptIncomingConnection()
+//                val time = measureTimeMillis {
+//                    async {
+//                        server.stream().findFirst().map {
+//                            it.networkInterface.sendPacket(MessagePacket("HI"))
+//                        }
+//                    }
+//                    async {
+//                        server.stream().findFirst().map {
+//                            it.networkInterface.sendPacket(MessagePacket("HI2"))
+//                        }
+//                    }
+//                }
+//            }catch (e: Exception) {
+//                println("Error")
+//            }
+
+
         }
 
         //println(time)

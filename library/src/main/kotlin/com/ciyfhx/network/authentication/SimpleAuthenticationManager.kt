@@ -21,6 +21,7 @@ import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.readBytes
 import com.ciyfhx.network.sendBytes
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 class SimpleAuthenticationManager(private val credential: Credential) : AuthenticationManager() {
 
@@ -56,10 +57,14 @@ class SimpleAuthenticationManager(private val credential: Credential) : Authenti
 
     override fun authenticationFailed(connection: NetworkConnection) {
         logger.info("Simple authentication is unsuccessful")
+        throw IncorrectCredential()
     }
 
     override fun authenticationTimeOut(connection: NetworkConnection) {
         logger.info("Simple authentication is unsuccessful (timeout)")
+        throw IncorrectCredential()
     }
+
+    inner class IncorrectCredential : Exception("Incorrect credentials")
 
 }

@@ -53,7 +53,7 @@ public class Client extends BaseServerClientModel{
 	 * @return Client Network Connection to the server
 	 * @throws IOException
 	 */
-	public NetworkConnection connect(InetAddress address, int port, SSLContext sslContext) throws IOException {
+	public NetworkConnection connect(InetAddress address, int port, SSLContext sslContext) throws Exception {
 		return connect(address.getHostAddress(), port, sslContext);
 	}
 
@@ -65,7 +65,7 @@ public class Client extends BaseServerClientModel{
 	 * @return Client Network Connection to the server
 	 * @throws IOException
 	 */
-	public NetworkConnection connect(InetAddress address, int port) throws IOException {
+	public NetworkConnection connect(InetAddress address, int port) throws Exception {
 		return connect(address.getHostAddress(), port, null);
 	}
 
@@ -77,7 +77,7 @@ public class Client extends BaseServerClientModel{
 	 * @return Client Network Connection to the server
 	 * @throws IOException
 	 */
-	public NetworkConnection connect(String host, int port, SSLContext sslContext) throws IOException {
+	public NetworkConnection connect(String host, int port, SSLContext sslContext) throws Exception {
 
 		if(sslContext != null){
 			socket = sslContext.getSocketFactory().createSocket(host, port);
@@ -88,7 +88,7 @@ public class Client extends BaseServerClientModel{
 		networkConnection.setNetworkListener(networkListener);
 
 		//Call the pre connection listener
-		networkListener.preConnection(networkConnection);
+		if(networkListener!=null)networkListener.preConnection(networkConnection);
 		//networkConnection.setPipeLineStream(networkConnection.getPipeLineStream());
 
 		// Authenticate
@@ -130,7 +130,7 @@ public class Client extends BaseServerClientModel{
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return connect(host, port, sslContext);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		});
@@ -147,7 +147,7 @@ public class Client extends BaseServerClientModel{
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return connect(address, port, sslContext);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		});

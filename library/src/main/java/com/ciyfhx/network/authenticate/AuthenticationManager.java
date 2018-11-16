@@ -24,15 +24,15 @@ public abstract class AuthenticationManager {
 	
 	private long authenticationTimeOut = 5000;
 
-	abstract public boolean serverAuthenticate(NetworkConnection connection);
+	abstract public boolean serverAuthenticate(NetworkConnection connection) throws Exception;
 
-	abstract public boolean clientAuthenticate(NetworkConnection connection);
+	abstract public boolean clientAuthenticate(NetworkConnection connection) throws Exception;
 
-	abstract public void authenticationSuccess(NetworkConnection connection);
+	abstract public void authenticationSuccess(NetworkConnection connection) throws Exception;
 
-	abstract public void authenticationFailed(NetworkConnection connection);
+	abstract public void authenticationFailed(NetworkConnection connection) throws Exception;
 	
-	abstract public void authenticationTimeOut(NetworkConnection connection);
+	abstract public void authenticationTimeOut(NetworkConnection connection) throws Exception;
 
 	public static AuthenticationManager getDefaultAuthenticationManager() {
 		return new RSAWithAESAuthenticationWithHMACValidator();

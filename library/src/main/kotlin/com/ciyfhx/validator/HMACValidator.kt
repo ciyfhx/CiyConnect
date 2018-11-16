@@ -51,7 +51,7 @@ class HMACValidator : MACValidator() {
 
         val contentBB = ByteBuffer.wrap(content)
         if (secret == null) throw RuntimeException("Secret/Salt is not set")
-        val computedHash = getHMACHashed(data, secret)
+        val computedHash = getHMACHashed(ByteBuffer.wrap(content), secret)
 
         if (Arrays.equals(computedHash.array(), hashed)) {
             logger.trace("Computed hashed is correct")

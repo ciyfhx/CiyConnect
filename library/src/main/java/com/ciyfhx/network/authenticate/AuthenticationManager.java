@@ -35,7 +35,7 @@ public abstract class AuthenticationManager {
 	abstract public void authenticationTimeOut(NetworkConnection connection);
 
 	public static AuthenticationManager getDefaultAuthenticationManager() {
-		return new RSAWithAESAuthenticationWithMACValidator();
+		return new RSAWithAESAuthenticationWithHMACValidator();
 	}
 
 	public void setAuthenticationTimeOut(long authenticationTimeOut){

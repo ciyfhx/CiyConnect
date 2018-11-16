@@ -15,7 +15,7 @@ allprojects {
 
 
     group 'com.ciyfhx'
-    version '1.4.0'
+    version '1.4.1'
 
     apply plugin: 'java-library'
     apply plugin: 'kotlin'

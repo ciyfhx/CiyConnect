@@ -19,6 +19,7 @@ package com.ciyfhx.network;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
@@ -30,6 +31,10 @@ import com.ciyfhx.network.authenticate.AuthenticationManager;
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocketFactory;
 
 public class Server extends BaseServerClientModel{
 
@@ -62,11 +67,11 @@ public class Server extends BaseServerClientModel{
 
 	/**
 	 * Initialize server socket
-	 * 
+	 *
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 */
-	public void init(int port) throws IllegalAccessException, IOException {
+	protected void init(int port, int backLog, InetAddress address, SSLContext sslContext) throws IllegalAccessException, IOException {
 		if (isRunning())
 			throw new IllegalAccessException("Server is already running");
 
@@ -86,7 +91,13 @@ public class Server extends BaseServerClientModel{
 			}
 		};
 
-		server = new ServerSocket(port);
+		if(sslContext != null){
+			ServerSocketFactory sslSocketFactory = sslContext.getServerSocketFactory();
+			server = sslSocketFactory.createServerSocket(port, backLog, address);
+		}else{
+			server = new ServerSocket(port, backLog, address);
+		}
+
 
 		init.set(true);
 	}
@@ -163,12 +174,23 @@ public class Server extends BaseServerClientModel{
 		return connections.entrySet().stream().map(con -> con.getValue());
 	}
 
+	/**
+	 * Close the server and all the existing connections
+	 */
 	public void close() {
 		if (!isRunning())
 			throw new IllegalStateException("Server is not running!");
 
-		running.set(false);
 
+		this.stream().forEach((con) -> {
+			try {
+				removeConnection(con);
+			} catch (IOException e) {
+				e.printStackTrace();
+				logger.error("Error closing network for {}", con);
+			}
+		});
+		running.set(false);
 	}
 
 	@Deprecated()
@@ -190,6 +212,11 @@ public class Server extends BaseServerClientModel{
 				new DataInputStream(socket.getInputStream()), socket);
 	}
 
+	/**
+	 * Add a new connection
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void addConnection(NetworkConnection networkConnection) throws IOException {
 		if (!isRunning())
 			throw new IllegalAccessError("Server not initialized!");
@@ -198,6 +225,11 @@ public class Server extends BaseServerClientModel{
 
 	}
 
+	/**
+	 * Forcefully remove an existing connection
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void removeConnection(NetworkConnection networkConnection) throws IOException {
 		if (!isRunning())
 			throw new IllegalAccessError("Server not initialized!");
@@ -206,11 +238,20 @@ public class Server extends BaseServerClientModel{
 
 	}
 
+	/**
+	 * Forcefully remove an existing connection from list
+	 * @param networkConnection
+	 * @throws IOException
+	 */
 	protected void removeConnectionFromList(NetworkConnection networkConnection) {
 		connections.values().remove(networkConnection);
 		System.gc();
 	}
 
+	/**
+	 * The total amount of connections
+	 * @return
+	 */
 	public int getConnectionsCount(){
 		return connections.size();
 	}

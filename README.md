@@ -161,7 +161,8 @@ server.acceptIncomingConnectionAsync();
 for Asynchronous call which returns a CompletableFuture
 ### Kotlin
 ```kotlin
-val server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build()
+val server = ServerBuilder.newInstance().build(
+            port = 5555, packetsFactory = factory)
 server.acceptIncomingConnectionAsync()
 ```
 This create a server instance with port configured to 5555 and with the packets factory that we created earlier.
@@ -183,7 +184,7 @@ client.connectAsync("localhost", 5555).thenAccept((b) -> {
 ```
 ### Kotlin
 ```kotlin
-val client = ClientBuilder.newInstance().withPacketsFactory(factory).build()
+val client = ClientBuilder.newInstance().build(packetsFactory = factory)
 client.connectAsync("localhost", 5555).thenAccept {
     println("Connected")
 }
@@ -222,6 +223,37 @@ client.sendPacket(MessagingPacket("Hello"))
 ```
 
 # Advanced
+## Dispatcher
+Dispatcher defines how the server handle connections and threads
+
+FixedServerConnectionDispatcher - Create a fixed thread pool, can only handle limit request. (Default) maxConnection = 3
+CachedServerConnectionDispatcher - Create a cached thread pool, will reuse thread if available, if not create new thread
+
+### Java
+```java
+
+ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
+				.withServerConnectionDispatcher(new FixedServerConnectionDispatcher(3)).build();
+
+ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
+				.withServerConnectionDispatcher(new CachedServerConnectionDispatcher()).build();
+```
+
+### Kotlin
+```kotlin
+
+val server = ServerBuilder.newInstance().build(
+        port = 5555,
+        packetsFactory = packageFactory,
+        dispatcher = FixedServerConnectionDispatcher(3)
+)
+val server = ServerBuilder.newInstance().build(
+        port = 5555,
+        packetsFactory = packageFactory,
+        dispatcher = CachedServerConnectionDispatcher()
+)
+```
+
 ## Pipeline
 Pipeline is useful for doing pre-processing of data before its sent or receive by the subscriber
 
@@ -233,8 +265,34 @@ Build-in piplines:<br>
 4. HMACValidator<br>
 
 <br>
-Custom pipeline can be define by implementing the PipeLine interface
+Custom pipeline can be define by implementing the PipeLine interface.
 
+To add a pipeline,
+Example:
+### Java
+```java
+//Server
+server.acceptIncomingConnectionAsync().thenAccept(con -> {
+    con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+});
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept(con -> {
+    con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+});
+```
+### Kotlin
+```kotlin
+//Server
+server.acceptIncomingConnectionAsync().thenAccept {
+    it.pipeLineStream += CompressionPipeLine()
+}
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept {
+    it.pipeLineStream += CompressionPipeLine()
+}
+```
 ## Authentication Manager
 AuthenticationManager class handles server-client authentication before the connection is added to the list or accepted
 Default AuthenticationManager: RSAWithAESAuthenticationWithValidator
@@ -248,6 +306,55 @@ once the authentication succeed
 Custom authentication manager can be define by extending the AuthenticationManager class
 ## Session
 Session can be used to store a connection specific object
+#### Note: Session object is not shared
+
+### Java
+```java
+//Server
+server.acceptIncomingConnectionAsync().thenAccept(con -> {
+    con.getSession().set("mykey", "random");
+});
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept(con -> {
+    con.getSession().set("mykey", "random");
+});
+```
+
+### Kotlin
+```kotlin
+
+//Server
+server.acceptIncomingConnectionAsync().thenAccept {
+    it.session += "mykey" bind "random"
+}
+
+//Client
+client.connectAsync("localhost", 5555).thenAccept {
+    it.session += "mykey" bind "random"
+}
+
+
+```
+
+## With Coroutines
+### Kotlin
+
+```kotlin
+runBlocking(Dispatchers.IO){
+    async {
+        server.stream().findFirst().map {
+            it.networkInterface.sendPacket(MessagePacket("HI"))
+        }
+    }
+    async {
+        server.stream().findFirst().map {
+            it.networkInterface.sendPacket(MessagePacket("HI2"))
+        }
+    }
+
+}
+```
 
 ## Dependencies
 

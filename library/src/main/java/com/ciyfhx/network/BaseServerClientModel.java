@@ -34,10 +34,28 @@ public class BaseServerClientModel {
     //Uses for creating the standard protocol
     protected Class networkInterfaceClass = DefaultInterfaceProtocol.class;
 
+    private boolean useSSL  = false;
+
+    protected void setUseSSL(boolean useSSL){
+        this.useSSL = useSSL;
+    }
+
+    public boolean UseSSL(){
+        return useSSL;
+    }
+
+    /**
+     * Set the Network listener
+     * @param networkListener
+     */
     public void setNetworkListener(NetworkListener networkListener) {
         this.networkListener = networkListener;
     }
 
+    /**
+     * Returns the set Network listener
+     * @return
+     */
     public NetworkListener getNetworkListener() {
         return networkListener;
     }
@@ -86,6 +104,10 @@ public class BaseServerClientModel {
         return packetsFactory;
     }
 
+    /**
+     * Is the connection alive
+     * @return
+     */
     public boolean isRunning() {
         return running.get();
     }

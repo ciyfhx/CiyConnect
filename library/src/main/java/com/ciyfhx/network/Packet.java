@@ -20,18 +20,40 @@ import java.nio.ByteBuffer;
 
 public class Packet {
 
+	//Data containing the data to be send
 	protected ByteBuffer data;
-	private int id;
+	//The Packet ID number register with the packet factory
+	protected int id;
 
 	protected void initID(int id){
 		this.id = id;
 	}
-	
+
+
+	/**
+	 * Set both the packet id and the data
+	 * @param id
+	 * @param data
+	 */
 	public Packet(int id, ByteBuffer data){
 		this.data = data;
 		initID(id);
 	}
-	
+
+	/**
+	 * Set the packet id but set the data to null
+	 * <b>Note: </b> Remember to set the data afterward
+	 * @param id
+	 */
+	public Packet(int id){
+		this(id, null);
+	}
+
+	/**
+	 * Set the data but set the packet id to -1
+	 * <b>Note: </b> Remember to set the packet id afterward
+	 * @param data
+	 */
 	protected Packet(ByteBuffer data){
 		this(-1, data);
 	}

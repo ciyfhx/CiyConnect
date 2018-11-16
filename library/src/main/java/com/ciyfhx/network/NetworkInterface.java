@@ -138,8 +138,8 @@ public abstract class NetworkInterface implements Runnable {
 	 * @param packet - packet to send
 	 * @throws Exception
 	 */
-	public synchronized void sendPacket(Packet packet) throws Exception {
-		writeProtocol(packet);
+	public void sendPacket(Packet packet) throws Exception {
+			writeProtocol(packet);
 	}
 
 	/**

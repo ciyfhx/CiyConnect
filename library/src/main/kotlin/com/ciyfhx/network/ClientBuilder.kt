@@ -14,20 +14,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network;
+package com.ciyfhx.network
 
-public interface NetworkListener {
+import com.ciyfhx.network.authenticate.AuthenticationManager
+import com.ciyfhx.network.dispatcher.FixedServerConnectionDispatcher
+import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher
 
-	/**
-	 * Called when there is new connection
-	 * @param connector
-	 */
-	public void connected(NetworkConnection connector);
 
-	/**
-	 * Called when there is a disconnection
-	 * @param disconnector
-	 */
-	public void disconnected(NetworkConnection disconnector);
-	
+fun ClientBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
+                        packetsFactory: PacketsFactory = PacketsFactory()): Client {
+    val client = Client(authenticationManager, packetsFactory)
+
+    return client
 }

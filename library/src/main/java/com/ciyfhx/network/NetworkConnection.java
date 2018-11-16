@@ -61,6 +61,7 @@ public class NetworkConnection {
 	protected NetworkInterface createNetworkInterface(){
 		try {
 			networkInterface = (NetworkInterface) model.networkInterfaceClass.getDeclaredConstructors()[0].newInstance(this, this.model);
+			session = new Session(this);
 			return this.networkInterface;
 		} catch (InstantiationException e) {
 			e.printStackTrace();

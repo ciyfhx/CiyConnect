@@ -14,20 +14,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network.validator;
-
-import com.ciyfhx.network.PipeLine;
-
-import java.nio.ByteBuffer;
-
-public interface SecretInterface extends PipeLine {
-
-    ByteBuffer getSecret();
-    void setSecret(ByteBuffer secret);
-
-    ByteBuffer getSenderSecret();
-    void setSenderSecret(ByteBuffer secret);
+package com.ciyfhx.network
 
 
+operator fun PipeLineStream.plusAssign(pipeLine: PipeLine) {
+    this.addPipeLine(pipeLine)
+}
 
+operator fun PipeLineStream.minusAssign(pipeLine: PipeLine) {
+    this.removePipeLine(pipeLine)
 }

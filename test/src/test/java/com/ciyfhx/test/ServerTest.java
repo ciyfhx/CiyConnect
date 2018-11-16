@@ -53,7 +53,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import com.ciyfhx.network.*;
-import com.ciyfhx.network.validator.MACValidator;
+import com.ciyfhx.network.dispatcher.CachedServerConnectionDispatcher;
 import com.ciyfhx.processors.Processors;
 import com.ciyfhx.processors.TransformProcessor;
 
@@ -77,9 +77,8 @@ public class ServerTest {
 
 		publisher.subscribe(stringTransformProcessor);
 		stringTransformProcessor.subscribe(new PrintLineSubscriber());
-
-
-		Server server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory).build();
+		Server server = ServerBuilder.newInstance().withPort(5555).withPacketsFactory(factory)
+				.withServerConnectionDispatcher(new CachedServerConnectionDispatcher()).build();
 
 		server.setNetworkListener(new NetworkListener() {
 
@@ -90,7 +89,7 @@ public class ServerTest {
 
 			@Override
 			public void connected(NetworkConnection connector) {
-				connector.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+				//connector.getPipeLineStream().addPipeLine(new CompressionPipeLine());
 				System.out.println("Connector: " + connector.getAddress());
 
 
@@ -109,7 +108,10 @@ public class ServerTest {
 		});
 
 
-		server.acceptIncomingConnectionAsync();
+		server.acceptIncomingConnectionAsync().thenAccept(b -> {
+			b.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+			b.getSession().set("hello", "test");
+		});
 
 
 
@@ -124,7 +126,6 @@ public class ServerTest {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 			});
 			Thread.sleep(1000);
 		}

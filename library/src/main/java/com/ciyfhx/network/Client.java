@@ -19,9 +19,13 @@ package com.ciyfhx.network;
 
 import com.ciyfhx.network.authenticate.AuthenticationManager;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
@@ -42,13 +46,42 @@ public class Client extends BaseServerClientModel{
 	}
 
 	/**
-	 * Connect to server
-	 * 
+	 *	Connect to server
+	 * @param address - host address to connect
+	 * @param port - port to connect
+	 * @param sslContext - Set to null if no need SSLContext to create SSLSocket
+	 * @return Client Network Connection to the server
 	 * @throws IOException
-	 * @throws UnknownHostException
 	 */
-	public NetworkConnection connect(String host, int port) throws UnknownHostException, IOException {
-		socket = new Socket(host, port);
+	public NetworkConnection connect(InetAddress address, int port, SSLContext sslContext) throws IOException {
+		return connect(address.getHostAddress(), port, sslContext);
+	}
+
+
+	/**
+	 *	Connect to server (no SSLContext)
+	 * @param address - host address to connect
+	 * @param port - port to connect
+	 * @return Client Network Connection to the server
+	 * @throws IOException
+	 */
+	public NetworkConnection connect(InetAddress address, int port) throws IOException {
+		return connect(address.getHostAddress(), port, null);
+	}
+
+	/**
+	 *	Connect to server
+	 * @param host - host address to connect
+	 * @param port - port to connect
+	 * @param sslContext - Set to null if no need SSLContext to create SSLSocket
+	 * @return Client Network Connection to the server
+	 * @throws IOException
+	 */
+	public NetworkConnection connect(String host, int port, SSLContext sslContext) throws IOException {
+
+		if(sslContext != null){
+			socket = sslContext.getSocketFactory().createSocket(host, port);
+		}else socket = new Socket(host, port);
 
 		networkConnection = new NetworkConnection(this, socket.getInetAddress(),
 				new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);
@@ -72,21 +105,72 @@ public class Client extends BaseServerClientModel{
 		return networkConnection;
 	}
 
+
+	/**
+	 *	Connect to server (no SSLContext)
+	 * @param host - host address to connect
+	 * @param port - port to connect
+	 * @return Client Network Connection to the server
+	 */
+	public NetworkConnection connect(String host, int port) {
+		return connect(host, port);
+	}
+
 	/**
 	 * Async connect
-	 * @param host
-	 * @param port
-	 * @return
+	 * @param host - host address to connect
+	 * @param port - port to connect
+	 * @param sslContext - Set to null if no need SSLContext to create SSLSocket
+	 * @return CompletableFuture - callback when connection success or not
 	 */
-	public CompletableFuture<NetworkConnection> connectAsync(String host, int port){
+	public CompletableFuture<NetworkConnection> connectAsync(String host, int port, SSLContext sslContext){
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return connect(host, port);
+				return connect(host, port, sslContext);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		});
 	}
+
+	/**
+	 * Async connect
+	 * @param address - host address to connect
+	 * @param port - port to connect
+	 * @param sslContext - Set to null if no need SSLContext to create SSLSocket
+	 * @return CompletableFuture - callback when connection success or not
+	 */
+	public CompletableFuture<NetworkConnection> connectAsync(InetAddress address, int port, SSLContext sslContext){
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				return connect(address, port, sslContext);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+	}
+
+	/**
+	 * Async connect (no SSLContext)
+	 * @param host - host address to connect
+	 * @param port - port to connect
+	 * @return CompletableFuture - callback when connection success or not
+	 */
+	public CompletableFuture<NetworkConnection> connectAsync(String host, int port){
+		return connectAsync(host, port, null);
+	}
+
+	/**
+	 * Async connect (no SSLContext)
+	 * @param address - host address to connect
+	 * @param port - port to connect
+	 * @return CompletableFuture - callback when connection success or not
+	 */
+	public CompletableFuture<NetworkConnection> connectAsync(InetAddress address, int port){
+		return connectAsync(address, port, null);
+	}
+
+
 
 
 	public NetworkConnection getNetworkConnection(){

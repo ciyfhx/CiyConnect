@@ -20,10 +20,10 @@ import java.util.Arrays;
 
 
 import com.ciyfhx.network.*;
-import com.ciyfhx.network.validator.MACValidator;
 import com.ciyfhx.processors.Processors;
 import com.ciyfhx.processors.TransformProcessor;
 import com.ciyfhx.test.packet.PacketIDs;
+import com.ciyfhx.validator.ValidatorUtils;
 import java8.util.concurrent.SubmissionPublisher;
 import org.slf4j.impl.SimpleLogger;
 
@@ -57,10 +57,8 @@ public class ClientTest {
 			}
 		});
 
-		client.connectAsync("localhost", 5555).thenAccept((b) -> {
-
-			System.out.println("Connected");
-			client.getPipeLineStream().addPipeLine(new CompressionPipeLine());
+		client.connectAsync("localhost", 5555).thenAccept((con) -> {
+			con.getPipeLineStream().addPipeLine(new CompressionPipeLine());
 		});
 
 		//Blocking

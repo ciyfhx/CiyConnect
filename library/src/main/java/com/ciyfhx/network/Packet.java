@@ -28,6 +28,7 @@ public class Packet {
 	protected void initID(int id){
 		this.id = id;
 	}
+	protected void initData(ByteBuffer data){this.data = data;}
 
 
 	/**

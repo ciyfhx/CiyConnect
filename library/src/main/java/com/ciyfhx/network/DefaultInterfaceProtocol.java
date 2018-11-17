@@ -37,49 +37,36 @@ public class DefaultInterfaceProtocol extends NetworkInterface{
     }
 
     @Override
-    protected void readProtocol() {
+    protected Packet readProtocol() {
 
         DataInputStream input = networkConnection.getDataInputStream();
 
         synchronized (input){
             try{
+                Thread.sleep(delay);
                 int id = input.readInt();
-                logger.trace("Received packet id: {} from: {}", id, networkConnection.getAddress());
-                SubmissionPublisher<PacketEvent<Packet>> publisher = model.getPacketsFactory().checkPacket(id);
-                if (publisher != null) {
                     int packetSize = input.readInt();
                     if (packetSize >= maxPacketSize) {
-                        logger.warn("Packet size exceed limit: {}", packetSize);
+                        logger.warn("Packet size exceed limit: {}, id: {}", packetSize, id);
                         stop();
-                        return;
+                        return null;
                     }
                     ByteBuffer buffer = ByteBuffer.allocate(packetSize);
                     input.readFully(buffer.array(), 0, packetSize);
 
-                    buffer = transformPipelineRead(publisher, buffer);
-
-
-                    publisher.submit(new PacketEvent<Packet>(networkConnection, new Packet(buffer)));
-                } else {
-                    logger.warn("Unknown packet id: {}", id);
-                    stop();
-                    return;
-                }
-                Thread.sleep(delay);
+                    return new Packet(id, buffer);
             }catch (Exception e) {
                 e.printStackTrace();
                 logger.debug("Connection reset {}", networkConnection.getAddress());
                 stop();
-                return;
+                return null;
 
             }
         }
 
     }
 
-    private void stop(){
-        setConnected(false);
-    }
+
 
     @Override
     protected void writeProtocol(Packet packet) throws Exception {
@@ -89,8 +76,6 @@ public class DefaultInterfaceProtocol extends NetworkInterface{
             output.flush();
 
             ByteBuffer data = packet.getData();
-
-            data = transformPipelineWrite(data);
 
             output.writeInt(data.capacity());
             output.flush();

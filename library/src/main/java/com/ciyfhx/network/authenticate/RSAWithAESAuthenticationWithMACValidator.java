@@ -43,6 +43,8 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
             validator.setSenderSecret(ByteBuffer.wrap(senderSalt));
             logger.debug("Done receiving validator salt");
 
+            //Add Pipeline
+            connection.getPipeLineStream().addPipeLine(validator);
             return true;
         }else return false;
     }
@@ -59,6 +61,9 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
             validator.setSecret(ByteBuffer.wrap(salt));
             logger.debug("Sent validator salt");
 
+
+            //Add Pipeline
+            connection.getPipeLineStream().addPipeLine(validator);
             return true;
         }else return false;
     }
@@ -96,7 +101,7 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
     @Override
     public void authenticationSuccess(NetworkConnection connection) {
         super.authenticationSuccess(connection);
-        connection.getPipeLineStream().addPipeLine(validator);
+
     }
 
     public MACValidator getValidator() {

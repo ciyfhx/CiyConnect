@@ -86,6 +86,7 @@ public class Client extends BaseServerClientModel{
 		networkConnection = new NetworkConnection(this, socket.getInetAddress(),
 				new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);
 		networkConnection.setNetworkListener(networkListener);
+		NetworkInterface networkInterface = networkConnection.createNetworkInterface();
 
 		//Call the pre connection listener
 		if(networkListener!=null)networkListener.preConnection(networkConnection);
@@ -97,7 +98,7 @@ public class Client extends BaseServerClientModel{
 
 				authenticationManager.authenticationSuccess(networkConnection);
 
-				executorService.submit(networkConnection.createNetworkInterface());
+				executorService.submit(networkInterface);
 
 			} else {
 				authenticationManager.authenticationFailed(networkConnection);

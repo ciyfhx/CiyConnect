@@ -19,19 +19,13 @@ package com.ciyfhx.test
 import com.ciyfhx.network.*
 import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.authentication.AuthenticationManagerList
-import com.ciyfhx.network.authentication.SimpleAuthenticationManager
+import com.ciyfhx.network.authentication.BasicAuthenticationManager
 import com.ciyfhx.network.authentication.credential
 import com.ciyfhx.processors.Processors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.slf4j.impl.SimpleLogger
-import java.io.FileInputStream
-import java.io.IOException
-import java.lang.Exception
-import java.security.KeyStore
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
@@ -53,8 +47,8 @@ fun main(args: Array<String>) {
 //            packetsFactory = packageFactory
 //            )
 
-    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(), SimpleAuthenticationManager("hello" credential "123".toCharArray()))
-    val server = SSLServerBuilder.newInstance().build(port = 5555, authenticationManager = authenticationManager)
+    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(), BasicAuthenticationManager("hello" credential "123".toCharArray()))
+    val server = SSLServerBuilder.newInstance().build(port = 5556, authenticationManager = authenticationManager)
     runBlocking(Dispatchers.IO){
         var b = false
         while(true){
@@ -76,7 +70,7 @@ fun main(args: Array<String>) {
                     }
                     b = false
                 }.exceptionally {
-                    println("Error")
+                    it.printStackTrace()
                     b = false
                     null
                 }

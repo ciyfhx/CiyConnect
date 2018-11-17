@@ -35,6 +35,10 @@ data class Credential(val username: String, val password: CharArray){
     override fun hashCode(): Int {
         return super.hashCode()
     }
+
+    //For any extension static function
+    companion object {}
+
 }
 
 infix fun String.credential(password: CharArray): Credential{

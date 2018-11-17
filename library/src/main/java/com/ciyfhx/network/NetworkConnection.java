@@ -62,6 +62,7 @@ public class NetworkConnection {
 		try {
 			networkInterface = (NetworkInterface) model.networkInterfaceClass.getDeclaredConstructors()[0].newInstance(this, this.model);
 			session = new Session(this);
+			pipeLineStream = new PipeLineStream();
 			return this.networkInterface;
 		} catch (InstantiationException e) {
 			e.printStackTrace();

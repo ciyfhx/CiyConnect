@@ -25,6 +25,8 @@ public class PipeLineStream {
 
 	private List<PipeLine> pipeLines = new LinkedList<PipeLine>();
 
+	protected PipeLineStream() {}
+
 	protected ByteBuffer streamRead(ByteBuffer data) throws Exception {
 		ByteBuffer pipeData = data;
 		for (int i = pipeLines.size()-1; i >= 0; i--) {

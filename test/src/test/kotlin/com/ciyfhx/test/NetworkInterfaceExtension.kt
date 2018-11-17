@@ -14,7 +14,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.ciyfhx.network
+package com.ciyfhx.test
+
+import com.ciyfhx.network.NetworkConnection
 
 
 internal fun NetworkConnection.sendBytes(data: ByteArray) {

@@ -33,8 +33,7 @@ import javax.crypto.SecretKey;
 
 import com.ciyfhx.network.AESPipeLine;
 import com.ciyfhx.network.NetworkConnection;
-import com.ciyfhx.builder.PipeLineStreamBuilder;
-import com.ciyfhx.network.PipeLineStream;
+import com.ciyfhx.network.NetworkInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +83,8 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 			logger.debug("Sending AES IV");
 			sendBytes(connection, encryptedIV);
 
+			//Add pipeline
+			addPipeLine(connection);
 			return true;
 		} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
 			e.printStackTrace();
@@ -109,6 +110,9 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 
 			logger.debug("Getting AES IV");
 			iv = decrypt(readBytes(connection), keyPair.getPrivate());
+
+			//Add pipeline
+			addPipeLine(connection);
 
 			return true;
 
@@ -156,13 +160,7 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 	@Override
 	public void authenticationSuccess(NetworkConnection connection) {
 		logger.info("Authentication Success");
-		AESPipeLine aesPipeLine = new AESPipeLine();
-		aesPipeLine.setKeyValue(keyValue);
-		aesPipeLine.setIV(iv);
-		PipeLineStream stream = connection.getPipeLineStream();
 
-		if(stream==null)connection.setPipeLineStream(PipeLineStreamBuilder.newInstance().addPipeLine(aesPipeLine).build());
-		else stream.addPipeLine(aesPipeLine);
 	}
 
 	@Override
@@ -173,6 +171,13 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 	@Override
 	public void authenticationTimeOut(NetworkConnection connection) {
 		logger.info("Authentication Timeout");
+	}
+
+	private void addPipeLine(NetworkConnection connection){
+		AESPipeLine aesPipeLine = new AESPipeLine();
+		aesPipeLine.setKeyValue(keyValue);
+		aesPipeLine.setIV(iv);
+		connection.getPipeLineStream().addPipeLine(aesPipeLine);
 	}
 
 	public static byte[] encrypt(byte[] data, PublicKey key) {

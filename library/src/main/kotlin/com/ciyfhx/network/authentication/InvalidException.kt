@@ -13,16 +13,10 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package com.ciyfhx.network.authentication
 
-import com.ciyfhx.network.authenticate.RSAWithAESAuthenticationWithMACValidator
-import com.ciyfhx.validator.HMACValidator
+import java.lang.Exception
 
+class IncorrectCredential : Exception("Incorrect credentials")
 
-class RSAWithAESAuthenticationWithHMACValidator : RSAWithAESAuthenticationWithMACValidator() {
-
-    init {validator = HMACValidator()}
-
-
-
-}

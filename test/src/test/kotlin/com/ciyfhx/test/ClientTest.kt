@@ -7,17 +7,15 @@ import com.ciyfhx.network.Packet
 import com.ciyfhx.network.PacketsFactory
 import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.authentication.AuthenticationManagerList
-import com.ciyfhx.network.authentication.SimpleAuthenticationManager
+import com.ciyfhx.network.authentication.BasicAuthenticationManager
 import com.ciyfhx.network.authentication.credential
 import com.ciyfhx.network.build
 import com.ciyfhx.processors.Processors
 import java8.util.concurrent.Flow
 import org.slf4j.impl.SimpleLogger
-import java.io.FileInputStream
 import java.nio.ByteBuffer
-import java.security.KeyStore
 import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
+
 
 const val MESSAGE = 1
 
@@ -52,9 +50,11 @@ fun main(args: Array<String>){
     publisher.subscribe(toStringProcessor)
     toStringProcessor.subscribe(PrintLineSubscriber())
 
-    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(), SimpleAuthenticationManager("hell1o" credential "123".toCharArray()))
+
+    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
+            BasicAuthenticationManager("hello" credential "123".toCharArray()))
     val client = ClientBuilder.newInstance().build(packetsFactory = packageFactory, authenticationManager = authenticationManager)
-    client.connectAsync("192.168.99.1", 5555, SSLContext.getDefault()).thenAccept {
+    client.connectAsync("192.168.99.1", 5556, SSLContext.getDefault()).thenAccept {
         println("Client Connected")
     }.exceptionally {
         it.printStackTrace()

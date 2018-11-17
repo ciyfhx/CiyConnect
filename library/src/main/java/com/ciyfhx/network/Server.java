@@ -118,6 +118,7 @@ public class Server extends BaseServerClientModel{
 
 			NetworkConnection networkConnection = createNetworkConnection(socket);
 			networkConnection.setNetworkListener(serverNetworkListener);
+			NetworkInterface networkInterface = networkConnection.createNetworkInterface();
 
 			//Call the pre connection listener
 			serverNetworkListener.preConnection(networkConnection);
@@ -131,7 +132,7 @@ public class Server extends BaseServerClientModel{
 					socket.setSoTimeout(0);
 					authenticationManager.authenticationSuccess(networkConnection);
 
-					dispatcher.dispatchConnection(this, networkConnection.createNetworkInterface());
+					dispatcher.dispatchConnection(this, networkInterface);
 
 					addConnection(networkConnection);
 				} else {

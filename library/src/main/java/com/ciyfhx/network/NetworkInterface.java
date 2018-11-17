@@ -48,7 +48,25 @@ public abstract class NetworkInterface implements Runnable {
 			networkListener.connected(networkConnection);
 
 			while (connected.get()) {
-				this.readProtocol();
+				Packet packet = this.readProtocol();
+				int id = packet.getPacketID();
+				logger.trace("Received packet id: {}, from: {}", id, networkConnection.getAddress());
+				SubmissionPublisher<PacketEvent<Packet>> publisher = model.getPacketsFactory().checkPacket(id);
+				if (publisher != null) {
+
+					try {
+						ByteBuffer byteBuffer = transformPipelineRead(publisher, packet.getData());
+						publisher.submit(new PacketEvent<Packet>(networkConnection, new Packet(id, byteBuffer)));
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.debug("Connection reset {}", networkConnection.getAddress());
+						stop();
+					}
+
+				}else {
+					logger.warn("Unknown packet id: {}", id);
+					stop();
+				}
 			}
 
 			//Close connection
@@ -64,14 +82,35 @@ public abstract class NetworkInterface implements Runnable {
 	}
 
 	/**
+	 * Read directly from protocol class and transform the data without triggering any publisher
+	 * <b>Note:</b>Usually used in authentication where you just want to receive the data and this api cannot be used
+	 * when Runnable have already started to prevent conflict
+	 * @return Packet read and transformed
+	 * @throws Exception
+	 * @throws RuntimeException when interface runnable have already started
+	 */
+	public Packet readDirect() throws Exception {
+		if(connected.get())throw new RuntimeException("readDirect cannot be used when interface runnable have already started");
+		Packet packet = this.readProtocol();
+		int id = packet.getPacketID();
+		logger.trace("Received packet id: {}, from: {}", id, networkConnection.getAddress());
+		ByteBuffer byteBuffer = transformPipelineRead(null, packet.getData());
+		return new Packet(id, byteBuffer);
+	}
+
+	protected void stop(){
+		setConnected(false);
+	}
+
+	/**
 	 * Transform or decode the incoming data from the predefine pipeline
 	 * <b>Note:</b>This is similar to @see #transformPipelineWrite but does the transformation in reverse order
-	 * @param publisher - the publisher which the will call closeExceptionally on
+	 * @param publisher - the publisher which the will call closeExceptionally on (can be null)
 	 * @param buffer - buffer to be transform
-	 * @return
+	 * @return transformed data
 	 * @throws Exception
 	 */
-	protected ByteBuffer transformPipelineRead(SubmissionPublisher<PacketEvent<Packet>> publisher, ByteBuffer buffer) throws Exception{
+	private ByteBuffer transformPipelineRead(SubmissionPublisher<PacketEvent<Packet>> publisher, ByteBuffer buffer) throws Exception{
 		ByteBuffer tmpBuffer = buffer;
 
 		PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
@@ -80,7 +119,7 @@ public abstract class NetworkInterface implements Runnable {
 		}catch(Exception e){
 			e.printStackTrace();
 			logger.warn("Unable to decode data");
-			publisher.closeExceptionally(e);
+			if(publisher!=null)publisher.closeExceptionally(e);
 		}
 		return tmpBuffer;
 	}
@@ -91,7 +130,7 @@ public abstract class NetworkInterface implements Runnable {
 	 * @return
 	 * @throws Exception
 	 */
-	protected ByteBuffer transformPipelineWrite(ByteBuffer buffer) throws Exception{
+	private ByteBuffer transformPipelineWrite(ByteBuffer buffer) throws Exception{
 		ByteBuffer tmpBuffer = buffer;
 
 		PipeLineStream pipeLineStream = networkConnection.getPipeLineStream();
@@ -100,8 +139,8 @@ public abstract class NetworkInterface implements Runnable {
 		return tmpBuffer;
 	}
 
-	abstract protected void readProtocol();
-	abstract protected void writeProtocol(Packet packet) throws Exception ;
+	abstract protected Packet readProtocol();
+	abstract protected void writeProtocol(Packet packet) throws Exception;
 
 	/**
 	 * Set the atomic connected boolean value
@@ -118,11 +157,13 @@ public abstract class NetworkInterface implements Runnable {
 	}
 
 	/**
-	 * Close all publishers
+	 * Close all publishers from this network interface
 	 */
 	private void closePublishers(){
 		model.getPacketsFactory().getPublishers().forEach(SubmissionPublisher::close);
 	}
+
+
 
 
 	/**
@@ -139,7 +180,8 @@ public abstract class NetworkInterface implements Runnable {
 	 * @throws Exception
 	 */
 	public void sendPacket(Packet packet) throws Exception {
-			writeProtocol(packet);
+		ByteBuffer transformedData = transformPipelineWrite(packet.getData());
+		writeProtocol(new Packet(packet.getPacketID(), transformedData));
 	}
 
 	/**

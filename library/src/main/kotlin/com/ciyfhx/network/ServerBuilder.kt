@@ -25,9 +25,10 @@ import javax.net.ssl.SSLContext
 fun ServerBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
                         packetsFactory: PacketsFactory = PacketsFactory(),
                         dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3),
-                        port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost()): Server {
+                        port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost(), timeout: Int = 0): Server {
     val server = Server(authenticationManager, packetsFactory, dispatcher)
 
+    server.timeout = timeout
     server.init(port, backlog, address, null)
 
     return server
@@ -37,9 +38,10 @@ fun SSLServerBuilder.build(authenticationManager: AuthenticationManager = Authen
                         packetsFactory: PacketsFactory = PacketsFactory(),
                         dispatcher: ServerConnectionDispatcher = FixedServerConnectionDispatcher(3),
                         port: Int = 5555, backlog: Int = 50, address: InetAddress = InetAddress.getLocalHost(),
-                                         sslContext: SSLContext = SSLContext.getDefault()): Server {
+                                         sslContext: SSLContext = SSLContext.getDefault(), timeout: Int = 0): Server {
     val server = Server(authenticationManager, packetsFactory, dispatcher)
 
+    server.timeout = timeout
     server.init(port, backlog, address, sslContext)
 
     return server

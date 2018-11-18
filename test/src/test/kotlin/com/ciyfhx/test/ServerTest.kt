@@ -28,6 +28,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.slf4j.impl.SimpleLogger
 import kotlin.system.measureTimeMillis
+import com.ciyfhx.network.build
 
 fun main(args: Array<String>) {
     System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")

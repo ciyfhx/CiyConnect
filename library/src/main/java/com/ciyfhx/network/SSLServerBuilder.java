@@ -64,6 +64,7 @@ public class SSLServerBuilder extends ServerBuilder{
     public Server build() throws IOException, IllegalAccessException {
         Server server = new Server(authenticationManager, packetsFactory, dispatcher);
 
+        server.setTimeout(timeout);
         server.init(port, backlog, bindAddress, sslContext);
 
         return server;

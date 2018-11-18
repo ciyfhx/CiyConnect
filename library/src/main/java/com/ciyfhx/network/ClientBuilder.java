@@ -26,6 +26,15 @@ public final class ClientBuilder {
 
     private ClientBuilder() {}
 
+    protected int timeout = 6000;
+
+    /**
+     * Set timeout for when trying to connect
+     */
+    protected void setTimeout(int timeout){
+        this.timeout = timeout;
+    }
+
     public static ClientBuilder newInstance(){
         return new ClientBuilder();
     }
@@ -39,9 +48,10 @@ public final class ClientBuilder {
         this.packetsFactory = packetsFactory;
         return this;
     }
-    
+
     public Client build(){
         Client client = new Client(authenticationManager, packetsFactory);
+        client.setTimeout(timeout);
 
         return client;
     }

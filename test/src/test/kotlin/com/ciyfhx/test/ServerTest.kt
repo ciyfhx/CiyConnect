@@ -50,7 +50,7 @@ fun main(args: Array<String>) {
 
     val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
             DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
-    val server = SSLServerBuilder.newInstance().build(port = 5556, authenticationManager = authenticationManager)
+    val server = ServerBuilder.newInstance().build(port = 5556)//, authenticationManager = authenticationManager
     runBlocking(Dispatchers.IO){
         var b = false
         while(true){

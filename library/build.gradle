@@ -4,6 +4,7 @@ plugins {
 
 }
 
+version '1.5.1'
 archivesBaseName = "ciyconnect"
 
 
@@ -29,9 +30,9 @@ bintray {
         licenses = ['GPL-2.0+CE']
         vcsUrl = 'https://github.com/ciyfhx/CiyConnect.git'
         version {
-            name = '1.5.0'
+            name = "${version}"
             desc = 'A Java library for creating TCP server and client'
-            vcsTag = '1.5.0'
+            vcsTag = "${version}"
             publish = true
         }
     }

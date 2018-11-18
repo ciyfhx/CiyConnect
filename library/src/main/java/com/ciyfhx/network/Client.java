@@ -118,8 +118,8 @@ public class Client extends BaseServerClientModel{
 	 * @param port - port to connect
 	 * @return Client Network Connection to the server
 	 */
-	public NetworkConnection connect(String host, int port) {
-		return connect(host, port);
+	public NetworkConnection connect(String host, int port) throws Exception {
+		return connect(host, port, null);
 	}
 
 	/**

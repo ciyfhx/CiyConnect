@@ -13,9 +13,7 @@ buildscript {
 
 allprojects {
 
-
     group 'com.ciyfhx'
-    version '1.5.0'
 
     apply plugin: 'java-library'
     apply plugin: 'kotlin'

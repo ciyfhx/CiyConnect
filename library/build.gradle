@@ -5,7 +5,7 @@ plugins {
 }
 
 
-ext.libversion = '1.5.4'
+ext.libversion = '1.5.5'
 version "${libversion}"
 archivesBaseName = "ciyconnect"
 

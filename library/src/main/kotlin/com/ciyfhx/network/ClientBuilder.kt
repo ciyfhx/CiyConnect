@@ -22,7 +22,7 @@ import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher
 
 
 fun ClientBuilder.build(authenticationManager: AuthenticationManager = AuthenticationManager.getDefaultAuthenticationManager(),
-                        packetsFactory: PacketsFactory = PacketsFactory(), timeout: Int = 0): Client {
+                        packetsFactory: PacketsFactory = PacketsFactory(), timeout: Int = 6000): Client {
     val client = Client(authenticationManager, packetsFactory)
     client.timeout = timeout
 

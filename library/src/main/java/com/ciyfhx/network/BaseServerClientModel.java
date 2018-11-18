@@ -31,7 +31,7 @@ public class BaseServerClientModel {
 
     protected NetworkListener networkListener;
 
-    protected int timeout = 0;
+    protected int timeout = 6000;
 
     //Uses for creating the standard protocol
     protected Class networkInterfaceClass = DefaultInterfaceProtocol.class;

@@ -38,7 +38,7 @@ public class ServerBuilder {
     protected int backlog = 50;
     protected InetAddress bindAddress = InetAddress.getLocalHost();
 
-    protected int timeout = 6000;
+    protected int timeout = 0;
 
     protected ServerBuilder() throws UnknownHostException {}
 

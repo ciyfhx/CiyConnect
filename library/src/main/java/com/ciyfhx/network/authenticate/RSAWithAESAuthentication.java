@@ -34,6 +34,7 @@ import javax.crypto.SecretKey;
 import com.ciyfhx.network.AESPipeLine;
 import com.ciyfhx.network.NetworkConnection;
 import com.ciyfhx.network.NetworkInterface;
+import com.ciyfhx.network.authentication.SecureGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 			logger.debug("AES Key: {}", new String(keyValue));
 
 			logger.debug("Generating IV and encrypting IV");
-			iv = randomSecureBytes(16);
+			iv = SecureGenerator.randomSecureBytes(16);
 			byte[] encryptedIV = encrypt(iv, pPublicKey);
 			logger.debug("Sending AES IV");
 			sendBytes(connection, encryptedIV);
@@ -165,12 +166,7 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 
 	@Override
 	public void authenticationFailed(NetworkConnection connection) {
-		logger.info("Authentication Failed");
-	}
-
-	@Override
-	public void authenticationTimeOut(NetworkConnection connection) {
-		logger.info("Authentication Timeout");
+		logger.warn("Authentication Failed");
 	}
 
 	private void addPipeLine(NetworkConnection connection){
@@ -215,18 +211,12 @@ public class RSAWithAESAuthentication extends AuthenticationManager{
 		return keyPair;
 	}
 
-	public static byte[] randomKeyValue() throws NoSuchAlgorithmException {
+	private static byte[] randomKeyValue() throws NoSuchAlgorithmException {
 		KeyGenerator gen = KeyGenerator.getInstance("AES");
 		gen.init(128); /* 128-bit AES */
 		SecretKey secret = gen.generateKey();
 		byte[] binary = secret.getEncoded();
 		return binary;
-	}
-
-	public static byte[] randomSecureBytes(int size) throws NoSuchAlgorithmException {
-		byte[] bytes = new byte[size];
-		SecureRandom.getInstance("SHA1PRNG").nextBytes(bytes);
-		return bytes;
 	}
 
 	/**

@@ -8,6 +8,7 @@ import com.ciyfhx.network.PacketsFactory
 import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.authentication.AuthenticationManagerList
 import com.ciyfhx.network.authentication.BasicAuthenticationManager
+import com.ciyfhx.network.authentication.DigestAuthenticationManager
 import com.ciyfhx.network.authentication.credential
 import com.ciyfhx.network.build
 import com.ciyfhx.processors.Processors
@@ -52,7 +53,7 @@ fun main(args: Array<String>){
 
 
     val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
-            BasicAuthenticationManager("hello" credential "123".toCharArray()))
+            DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
     val client = ClientBuilder.newInstance().build(packetsFactory = packageFactory, authenticationManager = authenticationManager)
     client.connectAsync("192.168.99.1", 5556, SSLContext.getDefault()).thenAccept {
         println("Client Connected")

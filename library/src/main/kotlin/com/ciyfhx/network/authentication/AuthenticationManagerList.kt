@@ -41,8 +41,4 @@ class AuthenticationManagerList(private vararg val list: AuthenticationManager) 
         for(am in list) am.authenticationFailed(connection)
     }
 
-    override fun authenticationTimeOut(connection: NetworkConnection?) {
-        for(am in list) am.authenticationTimeOut(connection)
-    }
-
 }

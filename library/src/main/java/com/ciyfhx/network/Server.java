@@ -27,6 +27,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
+import com.ciyfhx.network.authenticate.AuthenticationFailure;
 import com.ciyfhx.network.authenticate.AuthenticationManager;
 import com.ciyfhx.network.dispatcher.ServerConnectionDispatcher;
 import org.slf4j.Logger;
@@ -129,7 +130,7 @@ public class Server extends BaseServerClientModel{
 			if (authenticationManager != null) {
 				socket.setSoTimeout((int)authenticationManager.getAuthenticationTimeOut());
 				if (authenticationManager.serverAuthenticate(networkConnection)) {
-					socket.setSoTimeout(0);
+					socket.setSoTimeout(0);//Reset timeout
 					authenticationManager.authenticationSuccess(networkConnection);
 
 					dispatcher.dispatchConnection(this, networkInterface);
@@ -138,6 +139,8 @@ public class Server extends BaseServerClientModel{
 				} else {
 					// Authentication Failure
 					authenticationManager.authenticationFailed(networkConnection);
+					throw new AuthenticationFailure("Unable to authenticate");
+
 				}
 			} else {
 				//If no authentication protocol is specified

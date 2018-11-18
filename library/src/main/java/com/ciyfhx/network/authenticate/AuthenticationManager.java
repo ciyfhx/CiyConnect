@@ -31,8 +31,6 @@ public abstract class AuthenticationManager {
 	abstract public void authenticationSuccess(NetworkConnection connection) throws Exception;
 
 	abstract public void authenticationFailed(NetworkConnection connection) throws Exception;
-	
-	abstract public void authenticationTimeOut(NetworkConnection connection) throws Exception;
 
 	public static AuthenticationManager getDefaultAuthenticationManager() {
 		return new RSAWithAESAuthenticationWithHMACValidator();

@@ -20,6 +20,7 @@ import com.ciyfhx.network.*
 import com.ciyfhx.network.authenticate.AuthenticationManager
 import com.ciyfhx.network.authentication.AuthenticationManagerList
 import com.ciyfhx.network.authentication.BasicAuthenticationManager
+import com.ciyfhx.network.authentication.DigestAuthenticationManager
 import com.ciyfhx.network.authentication.credential
 import com.ciyfhx.processors.Processors
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +48,8 @@ fun main(args: Array<String>) {
 //            packetsFactory = packageFactory
 //            )
 
-    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(), BasicAuthenticationManager("hello" credential "123".toCharArray()))
+    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
+            DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
     val server = SSLServerBuilder.newInstance().build(port = 5556, authenticationManager = authenticationManager)
     runBlocking(Dispatchers.IO){
         var b = false

@@ -17,6 +17,7 @@
 package com.ciyfhx.network.authenticate;
 
 import com.ciyfhx.network.NetworkConnection;
+import com.ciyfhx.network.authentication.SecureGenerator;
 import com.ciyfhx.validator.MACValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
+
+import static com.ciyfhx.network.authentication.SecureGenerator.randomSecureBytes;
 
 public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthentication {
 
@@ -71,14 +74,11 @@ public class RSAWithAESAuthenticationWithMACValidator extends RSAWithAESAuthenti
     protected byte[] generateSaltAndSend(NetworkConnection connection) {
         try {
             //Generate salt and send
-            byte[] salt = super.randomSecureBytes(64);
+            byte[] salt = SecureGenerator.randomSecureBytes(64);
             byte[] encryptedSalt = encrypt(salt, super.getSenderPublicKey());
             super.sendBytes(connection, encryptedSalt);
             return salt;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            logger.error("Not able to generate salt");
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
             logger.error("Not able to send salt");
         }

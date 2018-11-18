@@ -16,7 +16,13 @@
 
 package com.ciyfhx.network.authentication
 
-import java.lang.Exception
+import java.security.SecureRandom
 
-class IncorrectCredential : Exception("Incorrect credentials")
-
+object SecureGenerator {
+    @JvmStatic
+    fun randomSecureBytes(size: Int): ByteArray {
+        val bytes = ByteArray(size)
+        SecureRandom.getInstance("SHA1PRNG").nextBytes(bytes)
+        return bytes
+    }
+}

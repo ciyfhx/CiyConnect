@@ -17,6 +17,7 @@
 
 package com.ciyfhx.network;
 
+import com.ciyfhx.network.authenticate.AuthenticationFailure;
 import com.ciyfhx.network.authenticate.AuthenticationManager;
 
 import javax.net.ssl.SSLContext;
@@ -102,6 +103,7 @@ public class Client extends BaseServerClientModel{
 
 			} else {
 				authenticationManager.authenticationFailed(networkConnection);
+				throw new AuthenticationFailure("Unable to authenticate");
 			}
 		} else {
 			executorService.submit(networkConnection.createNetworkInterface());

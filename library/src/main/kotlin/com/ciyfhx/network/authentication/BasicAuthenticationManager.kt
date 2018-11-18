@@ -34,9 +34,10 @@ class BasicAuthenticationManager(private val credential: Credential) : Authentic
         val clientCredential = Credential.base64(connection.networkInterface.readDirect().data.array())
 
         val same = clientCredential == credential
+        //Send ACK
         val packet = Packet(0, ByteBuffer.allocate(1).put(same.toByte()))
         connection.networkInterface.sendPacket(packet)
-        //connection.dataOutputStream.writeBoolean(same)
+
         return same
     }
 
@@ -45,8 +46,8 @@ class BasicAuthenticationManager(private val credential: Credential) : Authentic
 
         val packet = Packet(0, ByteBuffer.wrap(credential.base64()))
         connection.networkInterface.sendPacket(packet)
-        //connection.sendBytes()
 
+        //Read ACK
         val samePacket = connection.networkInterface.readDirect()
         val same = (samePacket.data.get().toInt() == 1)
         logger.trace("ACK from server is {}", same)
@@ -59,13 +60,7 @@ class BasicAuthenticationManager(private val credential: Credential) : Authentic
     }
 
     override fun authenticationFailed(connection: NetworkConnection) {
-        logger.info("Basic authentication is unsuccessful")
-        throw IncorrectCredential()
-    }
-
-    override fun authenticationTimeOut(connection: NetworkConnection) {
-        logger.info("Basic authentication is unsuccessful (timeout)")
-        throw IncorrectCredential()
+        logger.warn("Basic authentication is unsuccessful")
     }
 
 }

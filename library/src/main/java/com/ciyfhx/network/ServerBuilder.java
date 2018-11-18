@@ -38,7 +38,16 @@ public class ServerBuilder {
     protected int backlog = 50;
     protected InetAddress bindAddress = InetAddress.getLocalHost();
 
+    protected int timeout = 6000;
+
     protected ServerBuilder() throws UnknownHostException {}
+
+    /**
+     * Set timeout for when trying to connect
+     */
+    protected void setTimeout(int timeout){
+        this.timeout = timeout;
+    }
 
     /**
      * Create the instance used to build a com.ciyfhx.network.Server
@@ -54,6 +63,11 @@ public class ServerBuilder {
         }
     }
 
+    /**
+     * Port number to bind to
+     * @param port
+     * @return
+     */
     public ServerBuilder withPort(int port){
         this.port = port;
         return this;
@@ -110,6 +124,7 @@ public class ServerBuilder {
     public Server build() throws IOException, IllegalAccessException {
         Server server = new Server(authenticationManager, packetsFactory, dispatcher);
 
+        server.setTimeout(timeout);
         server.init(port, backlog, bindAddress, null);
 
         return server;

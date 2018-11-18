@@ -31,6 +31,8 @@ public class BaseServerClientModel {
 
     protected NetworkListener networkListener;
 
+    protected int timeout = 60000;
+
     //Uses for creating the standard protocol
     protected Class networkInterfaceClass = DefaultInterfaceProtocol.class;
 
@@ -42,6 +44,14 @@ public class BaseServerClientModel {
 
     public boolean UseSSL(){
         return useSSL;
+    }
+
+
+    /**
+     * Set timeout for when trying to connect
+     */
+    protected void setTimeout(int timeout){
+        this.timeout = timeout;
     }
 
     /**

@@ -98,6 +98,8 @@ public class Server extends BaseServerClientModel{
 			server = new ServerSocket(port, backLog, address);
 		}
 
+		server.setSoTimeout(timeout);
+
 
 		init.set(true);
 	}

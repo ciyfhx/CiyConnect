@@ -25,10 +25,7 @@ import javax.net.ssl.SSLSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -81,8 +78,10 @@ public class Client extends BaseServerClientModel{
 	public NetworkConnection connect(String host, int port, SSLContext sslContext) throws Exception {
 
 		if(sslContext != null){
-			socket = sslContext.getSocketFactory().createSocket(host, port);
-		}else socket = new Socket(host, port);
+			socket = sslContext.getSocketFactory().createSocket();
+		}else socket = new Socket();
+
+		socket.connect(new InetSocketAddress(host, port), timeout);
 
 		networkConnection = new NetworkConnection(this, socket.getInetAddress(),
 				new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);

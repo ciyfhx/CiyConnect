@@ -39,19 +39,7 @@ public final class ClientBuilder {
         this.packetsFactory = packetsFactory;
         return this;
     }
-
-//    public Client connectAsync(String host, int port){
-//        Client client = createClient();
-//
-//        return client.connectAsync(host, port);;
-//    }
-//
-//    public Client connect(String host, int port) throws IOException, IllegalAccessException {
-//        Client client = createClient();
-//        client.connect(host, port);
-//        return client;
-//    }
-
+    
     public Client build(){
         Client client = new Client(authenticationManager, packetsFactory);
 

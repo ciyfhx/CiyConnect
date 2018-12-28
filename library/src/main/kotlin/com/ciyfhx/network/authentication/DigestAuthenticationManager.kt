@@ -80,9 +80,6 @@ class DigestAuthenticationManager(private val credential: Credential, val realm:
     }
 
     private fun calculateResponse(nonce: ByteArray): ByteArray{
-
-        val a = getMD5Hash(ByteBuffer.wrap("test".toByteArray()))
-
         val usernameAndRealm = credential.username + ":" + realm + ":"
         val HA1content = CharArray(usernameAndRealm.length + credential.password.size)
         usernameAndRealm.toCharArray(HA1content)

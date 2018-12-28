@@ -1,11 +1,11 @@
 plugins {
     id "com.jfrog.bintray" version "1.7.3"
-
+    id "maven-publish"
 
 }
 
 
-ext.libversion = '1.5.5'
+ext.libversion = '1.5.6'
 version "${libversion}"
 archivesBaseName = "ciyconnect"
 
@@ -19,12 +19,80 @@ compileJava {
     options.compilerArgs += ["-Xlint:unchecked"]
 }
 
+dependencies {
+    implementation 'net.sourceforge.streamsupport:streamsupport-flow:1.7.0'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+
+def pomConfig = {
+    licenses {
+        license {
+            name "GPL-2.0+CE"
+            url "https://openjdk.java.net/legal/gplv2+ce.html"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "ziheng"
+            name "Peh Zi Heng"
+            email "pehziheng@gmail.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/ciyfhx/CiyConnect"
+    }
+}
+
+publishing {
+    publications {
+        mavenPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+            groupId 'com.ciyfhx'
+            artifactId 'ciyconnect'
+            version "${version}"
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'A Java library for creating TCP server and client')
+                root.appendNode('name', 'CiyConnect')
+                root.appendNode('url', 'https://github.com/ciyfhx/CiyConnect')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+
 bintray {
     user = project.property('bintray.user')
     key = project.property('bintray.apikey')
     println user
     println key
     configurations = ['archives']
+    publications = ['mavenPublication']
     pkg {
         repo = 'maven'
         name = 'CiyConnect'

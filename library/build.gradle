@@ -20,7 +20,7 @@ compileJava {
 }
 
 dependencies {
-    implementation 'net.sourceforge.streamsupport:streamsupport-flow:1.7.0'
+    api 'net.sourceforge.streamsupport:streamsupport-flow:1.7.0'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

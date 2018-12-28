@@ -49,9 +49,9 @@ fun main(args: Array<String>) {
 //            packetsFactory = packageFactory
 //            )
 
-    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
-            DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
-    val server = ServerBuilder.newInstance().build(port = 5556, packetsFactory = packageFactory)//, authenticationManager = authenticationManager
+//    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
+//            DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
+    val server = ServerBuilder.newInstance().build(port = 5555, packetsFactory = packageFactory)//, authenticationManager = authenticationManager
     runBlocking(Dispatchers.IO){
         var b = false
         while(true){

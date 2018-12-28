@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 public class PacketsFactory {
 
-	private ConcurrentHashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>> registeredPublishers = new ConcurrentHashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>>();
+	private final Map<Integer, SubmissionPublisher<PacketEvent<Packet>>> registeredPublishers = new ConcurrentHashMap<Integer, SubmissionPublisher<PacketEvent<Packet>>>();
 
 	
 	public void registerPublisher(SubmissionPublisher<PacketEvent<Packet>> publisher, int id) throws AlreadyInsertedException {
@@ -46,7 +46,7 @@ public class PacketsFactory {
 	}
 
 	/**
-	 *
+	 * This method creates a new SubmissionPublisher and add it to the map with the id as the key and returns it
 	 *
 	 * @param id - Packet ID
 	 * @return Flow.Publisher - Subscribe to receive packets from the given packet ID

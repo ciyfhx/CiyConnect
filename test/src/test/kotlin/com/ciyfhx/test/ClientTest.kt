@@ -54,7 +54,7 @@ fun main(args: Array<String>){
 
     val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
             DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
-    val client = ClientBuilder.newInstance().build()//packetsFactory = packageFactory, authenticationManager = authenticationManager
+    val client = ClientBuilder.newInstance().build(packetsFactory = packageFactory, authenticationManager = authenticationManager)
     client.connect("192.168.1.1", 5556)
     //Async("192.168.1.1", 5556).thenAccept {
     //        println("Client Connected")

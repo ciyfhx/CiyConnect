@@ -16,9 +16,7 @@
 
 package com.ciyfhx.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -208,8 +206,8 @@ public class Server extends BaseServerClientModel{
 	}
 
 	protected NetworkConnection createNetworkConnection(Socket socket) throws IOException {
-		return new NetworkConnection(this, socket.getInetAddress(), new DataOutputStream(socket.getOutputStream()),
-				new DataInputStream(socket.getInputStream()), socket);
+		return new NetworkConnection(this, socket.getInetAddress(), new DataOutputStream(new BufferedOutputStream(socket.getOutputStream())),
+				new DataInputStream(new BufferedInputStream(socket.getInputStream())), socket);
 	}
 
 	/**

@@ -22,9 +22,7 @@ import com.ciyfhx.network.authenticate.AuthenticationManager;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -84,7 +82,7 @@ public class Client extends BaseServerClientModel{
 		socket.connect(new InetSocketAddress(host, port), timeout);
 
 		networkConnection = new NetworkConnection(this, socket.getInetAddress(),
-				new DataOutputStream(socket.getOutputStream()), new DataInputStream(socket.getInputStream()), socket);
+				new DataOutputStream(new BufferedOutputStream((socket.getOutputStream()))), new DataInputStream(new BufferedInputStream(socket.getInputStream())), socket);
 		networkConnection.setNetworkListener(networkListener);
 		NetworkInterface networkInterface = networkConnection.createNetworkInterface();
 

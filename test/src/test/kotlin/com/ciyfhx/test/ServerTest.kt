@@ -29,6 +29,7 @@ import kotlinx.coroutines.runBlocking
 import org.slf4j.impl.SimpleLogger
 import kotlin.system.measureTimeMillis
 import com.ciyfhx.network.build
+import java.net.InetAddress
 
 fun main(args: Array<String>) {
     System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
@@ -51,7 +52,7 @@ fun main(args: Array<String>) {
 
 //    val authenticationManager = AuthenticationManagerList(AuthenticationManager.getDefaultAuthenticationManager(),
 //            DigestAuthenticationManager("hello" credential "123".toCharArray(), "com.1ciyfhx.test"))
-    val server = ServerBuilder.newInstance().build(port = 5555, packetsFactory = packageFactory)//, authenticationManager = authenticationManager
+    val server = ServerBuilder.newInstance().build(port = 5556, packetsFactory = packageFactory, address = InetAddress.getByName("192.168.1.1"))//, authenticationManager = authenticationManager
     runBlocking(Dispatchers.IO){
         var b = false
         while(true){

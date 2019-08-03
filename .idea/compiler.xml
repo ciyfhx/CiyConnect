@@ -2,8 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="CiyConnect.library.main" target="1.8" />
+      <module name="CiyConnect.library.test" target="1.8" />
+      <module name="CiyConnect.main" target="1.8" />
+      <module name="CiyConnect.test.main" target="1.8" />
+      <module name="CiyConnect.test.test" target="1.8" />
       <module name="CiyConnect_main" target="1.8" />
       <module name="CiyConnect_test" target="1.8" />
+      <module name="com.ciyfhx.CiyConnect.test" target="1.8" />
       <module name="library_main" target="1.8" />
       <module name="library_src" target="11" />
       <module name="library_test" target="1.8" />
